@@ -1,3 +1,4 @@
+const srcDir = '.';
 export default {
 	theme: {
 		extend: {
@@ -19,7 +20,7 @@ export default {
 					900: '#801c23',
 					950: '#450a0e'
 				},
-				'gray-nurse': {
+				graynurse: {
 					50: '#f7f7f6',
 					100: '#eceeea',
 					200: '#dce0d9',
@@ -35,5 +36,13 @@ export default {
 			}
 		}
 	},
+	content: [
+		'./components/**/*.{js,vue,ts}',
+		'./layouts/**/*.vue',
+		'./pages/**/*.vue',
+		'./plugins/**/*.{js,ts}',
+		'./app.vue',
+		'./error.vue'
+	],
 	plugins: []
 };

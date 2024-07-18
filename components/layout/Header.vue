@@ -1,5 +1,3 @@
-<script lang="ts"></script>
-
 <template>
 	<nav
 		class="flex flex-row w-full items-center justify-center py-3 px-3 md:px-10 gap-20 font-oswald text-4xl text-center"

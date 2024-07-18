@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
 	compatibilityDate: '2024-04-03',
 	devtools: { enabled: true },
+	css: ['~/assets/css/main.css'],
 	modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxt/fonts'],
 	fonts: {
 		families: [
@@ -11,6 +12,6 @@ export default defineNuxtConfig({
 		]
 	},
 	ui: {
-		icons: ['mdi', 'simple-icons']
+		icons: ['mdi']
 	}
 });

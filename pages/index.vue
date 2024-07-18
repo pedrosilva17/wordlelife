@@ -1,3 +1,10 @@
+<script setup lang="ts">
+
+</script>
+
 <template>
-	<Layout> Welcome to Word(le) Life! </Layout>
+	<Layout>
+		<p>Welcome to Word(le) Life!</p>
+        <UButton to="/endless">Endless Mode</UButton>
+	</Layout>
 </template>
