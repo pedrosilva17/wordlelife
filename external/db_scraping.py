@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from geopy.geocoders import Nominatim
 from youtubesearchpython import VideosSearch
+import pycountry
 
 def connection_open(db_path) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
     connection = sqlite3.connect(db_path)
@@ -101,9 +102,11 @@ def parse_wrestler(html):
     if location:
         lat, long = location.latitude, location.longitude
         country = nom.reverse(f'{lat}, {long}', language='en').raw['address']['country']
+        cc = pycountry.countries.search_fuzzy(country)[0].alpha_2
     else:
         lat, long = 0, 0
         country = "Unknown"
+        cc = "Unknown"
     
     height_ft, height_cm = map(lambda x: re.sub("[()]", "", x), get_wrestler_value(container_personal, 'height', num_outputs=2, split_sep=' ('))
     
@@ -117,11 +120,12 @@ def parse_wrestler(html):
     alignment = get_wrestler_value(container_career, 'alignments', with_entry=True)
     finisher = get_wrestler_value(soup, 'finishers', with_entry=True)
     theme_name = get_wrestler_value(soup, 'theme-songs', with_entry=True)
+    if 'Unknown' in [weight_kg, height_cm, country] or age == 0: return -1
     try:
         theme_link = VideosSearch(f'{theme_name} {name} entrance theme', limit=1).result()['result'][0]['link']
     except IndexError:
         theme_link = VideosSearch(f"{name} entrance theme", limit=1).result()['result'][0]['link']
-    return [[name], [age], [gender], [dob], [birth_place], [country], [lat], [long], [billed_from], [height_ft], [height_cm], [weight_lbs], [weight_kg], [nicknames], [promotion], [alignment], [finisher], [theme_link]]
+    return [[name], [age], [gender], [dob], [birth_place], [country], [cc], [lat], [long], [billed_from], [height_ft], [height_cm], [weight_lbs], [weight_kg], [nicknames], [promotion], [alignment], [finisher], [theme_link]]
 
 def fetch(url, filename, wait_js=False, wait_selector=None):
     if wait_js:
@@ -153,29 +157,34 @@ def fetch(url, filename, wait_js=False, wait_selector=None):
             return print(f"Error fetching HTML: {e}")
 
 if __name__ == "__main__":
-    create_database('database/database.sql', 'database/database.db')
-    wrestler_table = {
-        "name": "Wrestlers",
-        "columns": ["name", "age", "gender", "date_of_birth", "birth_place", "country", "latitude", "longitude", "billed_from", "height_ft", "height_cm", "weight_lbs", "weight_kg", "nicknames", "promotion", "alignment", "finisher", "theme_song"],
-    }
-    for i in range(1, 4):
-        url = f"https://www.thesmackdownhotel.com/wrestlers/#sort=attr.ct176.frontend_value\
-        &sortdir=asc&attr.ct39.value=wwe%2Caew%2Ctna\
-        &attr.ct60.value=wrestler&page={i}".replace(" ", "")
-        print(url)
-        if not os.path.isfile(f'external/html/wrestlers_{i}.html'):
-            wrestlers_html = fetch(url, f'wrestlers_{i}', True, '.product-items')
-            get_wrestlers(wrestlers_html)
-    wrestler_file_list = os.listdir('external/html/wrestlers')
-    for wrestler_file in wrestler_file_list:
-        with open(f'external/html/wrestlers/{wrestler_file}') as file:
-            wrestler_html = file.read()
-        print("Parsing ", wrestler_file)
-        soup = BeautifulSoup(wrestler_html, 'html.parser')
-        container_personal = soup.find('ul', { 'class': 'fields-container' })
-        name = container_personal.find('span', { 'class': 'name' }).get_text().strip()
-        if check_existing("Wrestlers", "name", name): continue
-        output = parse_wrestler(wrestler_html)
-        print("output: ", output)
-        wrestler_table['values'] = output
-        save(wrestler_table)
+    if os.path.isfile(f'database/dump.sql'):
+        print('Database dump exists, importing')
+        create_database('database/dump.sql', 'database/database.db')
+    else:
+        create_database('database/database.sql', 'database/database.db')
+        wrestler_table = {
+            "name": "Wrestlers",
+            "columns": ["name", "age", "gender", "date_of_birth", "birth_place", "country", "cc", "latitude", "longitude", "billed_from", "height_ft", "height_cm", "weight_lbs", "weight_kg", "nicknames", "promotion", "alignment", "finisher", "theme_song"],
+        }
+        for i in range(1, 4):
+            url = f"https://www.thesmackdownhotel.com/wrestlers/#sort=attr.ct176.frontend_value\
+            &sortdir=asc&attr.ct39.value=wwe%2Caew%2Ctna\
+            &attr.ct60.value=wrestler&page={i}".replace(" ", "")
+            print(url)
+            if not os.path.isfile(f'external/html/wrestlers_{i}.html'):
+                wrestlers_html = fetch(url, f'wrestlers_{i}', True, '.product-items')
+                get_wrestlers(wrestlers_html)
+        wrestler_file_list = os.listdir('external/html/wrestlers')
+        for wrestler_file in wrestler_file_list:
+            with open(f'external/html/wrestlers/{wrestler_file}') as file:
+                wrestler_html = file.read()
+            print("Parsing ", wrestler_file)
+            soup = BeautifulSoup(wrestler_html, 'html.parser')
+            container_personal = soup.find('ul', { 'class': 'fields-container' })
+            name = container_personal.find('span', { 'class': 'name' }).get_text().strip()
+            # if check_existing("Wrestlers", "name", name): continue
+            output = parse_wrestler(wrestler_html)
+            print("output: ", output)
+            if output == -1: continue
+            wrestler_table['values'] = output
+            save(wrestler_table)

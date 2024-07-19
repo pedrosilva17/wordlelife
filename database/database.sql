@@ -8,6 +8,7 @@ CREATE TABLE Wrestlers (
     date_of_birth TEXT,
     birth_place TEXT,
     country TEXT,
+    cc TEXT,
     latitude REAL,
     longitude REAL,
     billed_from TEXT,
