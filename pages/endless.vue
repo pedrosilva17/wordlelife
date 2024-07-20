@@ -1,42 +1,51 @@
 <script setup lang="ts">
 import type { Wrestler } from '~/interfaces/wrestler';
-import Game from '~/assets/game/game'
+import Game from '~/assets/game/game';
 const { data: options } = await useFetch('/api/wrestlers');
-const name_list = options.value?.map((wrestler: Wrestler) => wrestler.name);
-
+let nameList = options.value
+	?.map((wrestler: Wrestler) => wrestler.name)
+	.sort((a: string, b: string) => {
+		return a.replaceAll(/[^a-zA-Z]/g, '') > b.replaceAll(/[^a-zA-Z]/g, '');
+	});
 const game = new Game();
-game.start();
+await game.start();
 let lastChosen = ref();
 const state = reactive({
-    input: ref()
-})
+	input: undefined
+});
 
 const shown = ref(false);
-const result = ref(false);
+const guesses: Ref<Wrestler[]> = ref([]);
 
 function onSubmit() {
-    lastChosen.value = state.input;
-    state.input = undefined;
-    result.value = game.guess(lastChosen.value);
-    console.log(game.save());
+	lastChosen.value = options.value?.find((wrestler: Wrestler) => wrestler.name === state.input);
+	state.input = undefined;
+	guesses.value.push(game.guess(lastChosen.value));
+	nameList = nameList.filter((name: string) => name !== lastChosen.value.name);
+	console.log(game.save());
 }
-
 </script>
 
 <template>
-    <Layout>
-        <UForm ref="form" :state="state" class="flex flex-col space-y-4 h-full items-center justify-center" @submit="onSubmit">
-            <div>{{ `Try number: ${game.idx}` }}</div>
-            <div>{{ `Guesses: ${game.guesses.join(", ")}` }}</div>
-            <div v-if="shown">{{ game.answer }}</div>
-            <div v-if="lastChosen && options">{{ result ? "Correct!" : "Wrong." }}</div>
-            <GameInput v-model="state.input" :options="name_list" :disabled="game.isOver" class="w-fit mx-auto" />
-            <UButton type="submit" :disabled="game.isOver">
-                Submit
-            </UButton>
-            <UButton @click="shown = !shown">
-                {{ (shown ? "Hide" : "Show") + " Answer" }}
-            </UButton>
-        </UForm>
-    </Layout>
+	<Layout>
+		<UForm
+			ref="form"
+			:state="state"
+			@submit="onSubmit"
+			class="flex flex-col space-y-4 h-full items-center justify-center"
+		>
+			<div v-if="shown">{{ game.answer?.name }}</div>
+			<GameGuessTable v-if="game.answer" :guesses="guesses" :answer="game.answer" />
+			<GameInput
+				v-model="state.input"
+				:options="nameList"
+				:disabled="game.isOver"
+				class="w-fit mx-auto"
+			/>
+			<UButton type="submit" :disabled="game.isOver"> Submit </UButton>
+			<UButton @click="shown = !shown">
+				{{ (shown ? 'Hide' : 'Show') + ' Answer' }}
+			</UButton>
+		</UForm>
+	</Layout>
 </template>

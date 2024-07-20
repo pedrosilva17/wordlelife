@@ -10,5 +10,12 @@ const selected = defineModel();
 </script>
 
 <template>
-	<UInputMenu color="primary" variant="outline" v-model="selected" placeholder="Choose a wrestler!" :options="options" required/>
+	<UInputMenu
+		color="primary"
+		variant="outline"
+		v-model="selected"
+		placeholder="Choose a wrestler!"
+		:options="options"
+		required
+	/>
 </template>

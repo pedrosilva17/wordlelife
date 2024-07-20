@@ -17,5 +17,5 @@ export interface Wrestler {
 	promotion: string;
 	alignment: string;
 	finisher: string;
-	theme_song: string
+	theme_song: string;
 }
