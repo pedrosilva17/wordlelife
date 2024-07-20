@@ -120,7 +120,7 @@ def parse_wrestler(html):
     alignment = get_wrestler_value(container_career, 'alignments', with_entry=True)
     finisher = get_wrestler_value(soup, 'finishers', with_entry=True)
     theme_name = get_wrestler_value(soup, 'theme-songs', with_entry=True)
-    if 'Unknown' in [weight_kg, height_cm, country] or age == 0: return -1
+    if 'Unknown' in [weight_kg, height_cm, country, finisher] or age == 0: return -1
     try:
         theme_link = VideosSearch(f'{theme_name} {name} entrance theme', limit=1).result()['result'][0]['link']
     except IndexError:

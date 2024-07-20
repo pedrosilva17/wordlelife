@@ -6,6 +6,7 @@ export interface Wrestler {
 	date_of_birth: string;
 	birth_place: string;
 	country: string;
+	cc: string;
 	latitude: number;
 	longitude: number;
 	billed_from: string;

@@ -30,13 +30,49 @@ function computeColor(diff: number, boundary: number | undefined = undefined) {
 }
 
 function computeIcon(diff: number, isBinary: boolean) {
-	if (isBinary) return diff === 0 ? 'i-mdi-check-bold' : 'i-mdi-minus-thick';
+	if (isBinary) return diff === 0 ? 'i-mdi-check-thick' : 'i-mdi-minus-thick';
 	else
 		return diff === 0
-			? 'i-mdi-check-bold'
+			? 'i-mdi-check-thick'
 			: diff < 0
-				? 'i-mdi-arrow-up-bold'
-				: 'i-mdi-arrow-down-bold';
+				? 'i-mdi-arrow-up-thick'
+				: 'i-mdi-arrow-down-thick';
+}
+
+function computeDirectionalIcon(latDiff: number, lonDiff: number) {
+    if (latDiff === 0 && lonDiff === 0) return 'i-mdi-check-thick'
+    if (Math.abs(latDiff) > 3 * Math.abs(lonDiff)) {
+        return latDiff > 0 ? 'i-mdi-arrow-down-thick' : 'i-mdi-arrow-up-thick';
+    } else if (Math.abs(lonDiff) > 3 * Math.abs(latDiff)) {
+        return lonDiff > 0 ? 'i-mdi-arrow-right-thick' : 'i-mdi-arrow-left-thick';
+    } else {
+        if (latDiff > 0 && lonDiff > 0) {
+            return 'i-mdi-arrow-top-right-thick';
+        } else if (latDiff > 0 && lonDiff < 0) {
+            return 'i-mdi-arrow-top-left-thick';
+        } else if (latDiff < 0 && lonDiff > 0) {
+            return 'i-mdi-arrow-bottom-right-thick';
+        } else {
+            return 'i-mdi-arrow-bottom-left-thick';
+        }
+    }
+}
+
+function getDelta(coord1: number, coord2: number) {
+    return toRadians(coord1 - coord2);
+}
+
+function haversineDistance(point1: [number, number], point2: [number, number]) {
+    const earthRadiusKm = 6371;
+    const deltaLatitude = getDelta(point2[0], point1[0]);
+    const deltaLongitude = getDelta(point2[1], point1[1]);
+    const a =
+        Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2) +
+        Math.cos(toRadians(point1[0])) * Math.cos(toRadians(point2[0])) *
+        Math.sin(deltaLongitude / 2) * Math.sin(deltaLongitude / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return (earthRadiusKm * c);
 }
 
 function computeDifference(
@@ -63,6 +99,15 @@ function computeDifference(
 				icon: computeIcon(+(input !== target), true)
 			};
 		}
+        case DiffType.Coords: {
+            const inputPoint: [number, number] = [guess.latitude, guess.longitude]
+            const targetPoint: [number, number] = [answer.latitude, answer.longitude]
+            const dist = haversineDistance(targetPoint, inputPoint)
+            return {
+                color: computeColor(dist, 1000),
+                icon: computeDirectionalIcon(getDelta(targetPoint[0], inputPoint[0]), getDelta(targetPoint[1], inputPoint[1]))
+            }
+        }
 		case DiffType.Numeric: {
 			input = input.replaceAll(/[a-zA-Z]/g, '').trim();
 			target = target.replaceAll(/[a-zA-Z]/g, '').trim();
@@ -98,7 +143,7 @@ const comparison: {
 		<UIcon :name="comparison.icon" class="absolute top-1 right-1" />
 	</th>
 	<td v-else :class="`${cellClasses} ${comparison.color}`">
-		{{ guess[(column.displayKey ?? column.key) as keyof Wrestler] }}
+		{{ guess[(column.displayKey ?? column.key) as keyof Wrestler] }} <span v-if="column.key === 'birth_place'">{{ getUnicodeFlagIcon(guess.cc) }}</span>
 		<UIcon :name="comparison.icon" class="absolute top-1 right-1" />
 	</td>
 </template>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Wrestler } from '@/interfaces/wrestler';
 import { DiffType, type GuessColumn } from '@/utils/utils';
-import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 
 const { guesses, answer } = defineProps({
 	guesses: {
@@ -67,7 +66,7 @@ const columns: GuessColumn[] = [
 
 <template>
 	<template v-if="guesses.length === 0">
-		<p>Guess a wrestler!</p>
+		<p>Good luck!</p>
 	</template>
 	<template v-else>
 		<span

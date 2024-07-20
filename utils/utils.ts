@@ -5,8 +5,6 @@ export enum DiffType {
 	Numeric
 }
 
-export const imperialUnits = ref(false);
-
 export interface GuessColumn {
 	key: string;
 	displayKey?: string;
@@ -15,3 +13,6 @@ export interface GuessColumn {
 	diffType: DiffType;
 	diffBoundary?: number;
 }
+
+export const imperialUnits = ref(false);
+export const toRadians = (v: number) => (v * Math.PI) / 180;
