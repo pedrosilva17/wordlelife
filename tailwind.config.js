@@ -6,6 +6,9 @@ export default {
 				oswald: ['Oswald', 'sans-serif'],
 				inter: ['Inter', 'sans-serif']
 			},
+			gridTemplateColumns: {
+				game: 'repeat(8, minmax(150px, 1fr))'
+			},
 			colors: {
 				red: {
 					50: '#fef2f3',

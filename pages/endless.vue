@@ -9,7 +9,6 @@ let nameList = options.value
 	});
 const game = new Game();
 await game.start();
-let lastChosen = ref();
 const state = reactive({
 	input: undefined
 });
@@ -28,14 +27,19 @@ function giveUp() {
 async function newGame() {
 	guesses.value = [];
 	disable.value = false;
+	nameList = options.value
+		?.map((wrestler: Wrestler) => wrestler.name)
+		.sort((a: string, b: string) => {
+			return a.replaceAll(/[^a-zA-Z]/g, '') > b.replaceAll(/[^a-zA-Z]/g, '');
+		});
 	await game.start();
 }
 
 function onSubmit() {
-	lastChosen.value = options.value?.find((wrestler: Wrestler) => wrestler.name === state.input);
+	const guess = options.value?.find((wrestler: Wrestler) => wrestler.name === state.input);
 	state.input = undefined;
-	guesses.value.push(game.guess(lastChosen.value));
-	nameList = nameList.filter((name: string) => name !== lastChosen.value.name);
+	guesses.value.push(game.guess(guess));
+	nameList = nameList.filter((name: string) => name !== guess.name);
 	console.log(game.save());
 }
 </script>

@@ -70,22 +70,20 @@ const columns: GuessColumn[] = [
 	</template>
 	<template v-else>
 		<span
-			class="flex flex-col-reverse max-w-xs sm:max-w-md md:max-w-xl lg:max-w-6xl max-h-96 overflow-scroll"
+			class="flex flex-col-reverse max-w-xs sm:max-w-md md:max-w-xl lg:max-w-3xl xl:max-w-[90%] max-h-96 overflow-scroll"
 		>
-			<table class="border-separate border-spacing-3 w-full">
-				<thead>
-					<tr>
-						<th v-for="column in columns" class="border-b">{{ column.label }}</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="guess in guesses" :key="guess.id" class="h-16">
-						<template v-for="column in columns" :key="column.key">
-							<GameTableCell :column="column" :guess="guess" :answer="answer" />
-						</template>
-					</tr>
-				</tbody>
-			</table>
+			<div class="grid w-full gap-3 grid-cols-game">
+				<div v-for="column in columns" class="border-b">{{ column.label }}</div>
+				<template v-for="guess in guesses" :key="guess.id" class="flex flex-row">
+					<GameTableCell
+						v-for="column in columns"
+						:key="column.key"
+						:column="column"
+						:guess="guess"
+						:answer="answer"
+					/>
+				</template>
+			</div>
 		</span>
 	</template>
 </template>

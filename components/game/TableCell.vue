@@ -19,8 +19,6 @@ const { column, guess, answer } = defineProps({
 	}
 });
 
-const cellClasses = 'min-w-20 relative p-4 rounded-md justify-center items-center drop-shadow-lg';
-
 function isClose(diff: number, boundary: number = 0) {
 	return Math.abs(diff) <= boundary;
 }
@@ -41,7 +39,7 @@ function computeIcon(diff: number, isBinary: boolean) {
 function computeDirectionalIcon(latDiff: number, lonDiff: number) {
 	if (latDiff === 0 && lonDiff === 0) return 'i-mdi-check-thick';
 	if (Math.abs(latDiff) > 3 * Math.abs(lonDiff)) {
-		return latDiff > 0 ? 'i-mdi-arrow-down-thick' : 'i-mdi-arrow-up-thick';
+		return latDiff > 0 ? 'i-mdi-arrow-up-thick' : 'i-mdi-arrow-down-thick';
 	} else if (Math.abs(lonDiff) > 3 * Math.abs(latDiff)) {
 		return lonDiff > 0 ? 'i-mdi-arrow-right-thick' : 'i-mdi-arrow-left-thick';
 	} else {
@@ -169,20 +167,15 @@ const comparison: {
 </script>
 
 <template>
-	<Transition name="fade">
-		<th scope="row" v-if="column.key === 'name'" :class="`${cellClasses} ${comparison.color}`">
-			{{ guess[(column.displayKey ?? column.key) as keyof Wrestler] }}
-			<UIcon :name="comparison.icon" class="absolute top-1 right-1" />
-			<p class="text-sm absolute bottom-0 left-1">{{ comparison.infoText }}</p>
-		</th>
-		<td v-else :class="`${cellClasses} ${comparison.color}`">
-			{{ guess[(column.displayKey ?? column.key) as keyof Wrestler] }}
-			<span class="pl-1" v-if="column.key === 'birth_place'">{{
-				getUnicodeFlagIcon(guess.cc)
-			}}</span>
-			<UIcon :name="comparison.icon" class="absolute top-1 right-1" />
-			<p class="text-sm absolute bottom-0 left-1">{{ comparison.infoText }}</p>
-		</td>
-	</Transition>
+	<div :class="`flex flex-col min-w-20 relative p-4 rounded-md justify-center items-center drop-shadow-lg ${comparison.color}`">
+		{{ guess[(column.displayKey ?? column.key) as keyof Wrestler] }}
+		<span v-if="column.key === 'birth_place'">{{
+			getUnicodeFlagIcon(guess.cc)
+		}}</span>
+		<UIcon :name="comparison.icon" class="absolute top-1 right-1" />
+		<p v-if="comparison.infoText" class="text-sm absolute bottom-0 left-1">
+			{{ comparison.infoText }}
+		</p>
+	</div>
 </template>
 ~/types/wrestler~/utils/utils
