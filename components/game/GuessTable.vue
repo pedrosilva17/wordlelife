@@ -12,13 +12,13 @@ const { guesses, answer } = defineProps({
 		required: true
 	}
 });
-
+const delay = ref(0);
 const columns: GuessColumn[] = [
 	{
 		key: 'name',
 		label: 'Name',
 		diffType: DiffType.Alphabetical,
-		diffBoundary: 4 // differences between ascii code of first letter
+		diffBoundary: 4 // difference between ascii code of first letter
 	},
 	{
 		key: 'gender',
@@ -73,14 +73,17 @@ const columns: GuessColumn[] = [
 			class="flex flex-col-reverse max-w-xs sm:max-w-md md:max-w-xl lg:max-w-3xl xl:max-w-[90%] max-h-96 overflow-scroll"
 		>
 			<div class="grid w-full gap-3 grid-cols-game">
-				<div v-for="column in columns" class="border-b">{{ column.label }}</div>
+				<div v-for="column in columns" :key="column.key" class="border-b">
+					{{ column.label }}
+				</div>
 				<template v-for="guess in guesses" :key="guess.id" class="flex flex-row">
 					<GameTableCell
-						v-for="column in columns"
+						v-for="(column, idx) in columns"
 						:key="column.key"
 						:column="column"
 						:guess="guess"
 						:answer="answer"
+						:delay="idx * 300"
 					/>
 				</template>
 			</div>

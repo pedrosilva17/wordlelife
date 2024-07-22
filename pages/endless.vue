@@ -50,7 +50,7 @@ function onSubmit() {
 			ref="form"
 			:state="state"
 			@submit="onSubmit"
-			class="flex flex-col space-y-4 h-full items-center justify-center"
+			class="flex flex-col space-y-4 w-full h-full items-center justify-center"
 		>
 			<GameGuessTable v-if="game.answer" :guesses="guesses" :answer="game.answer" />
 			<div class="flex flex-col w-64 gap-3 justify-center">

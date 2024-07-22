@@ -16,8 +16,16 @@ const { column, guess, answer } = defineProps({
 	answer: {
 		type: Object as PropType<Wrestler>,
 		required: true
+	},
+	delay: {
+		type: Number,
+		required: true
 	}
 });
+
+function enter(el: Element, done: Function) {
+	done();
+}
 
 function isClose(diff: number, boundary: number = 0) {
 	return Math.abs(diff) <= boundary;
@@ -28,7 +36,7 @@ function computeColor(diff: number, boundary: number | undefined = undefined) {
 }
 
 function computeIcon(diff: number, isBinary: boolean) {
-	if (isBinary) return diff === 0 ? 'i-mdi-check-thick' : 'i-mdi-minus-thick';
+	if (isBinary) return diff === 0 ? 'i-mdi-check-thick' : 'i-mdi-close-thick';
 	return diff === 0
 		? 'i-mdi-check-thick'
 		: diff < 0
@@ -60,11 +68,12 @@ function computeDiffInfo(
 	unit: string | undefined = undefined,
 	boundary: number | undefined = undefined
 ) {
-	return diff === 0 || !boundary
-		? ''
+	if (diff === 0) return 'Correct!';
+	return !boundary
+		? 'Wrong.'
 		: isClose(diff, boundary)
-			? `≤${boundary} ${unit}s`
-			: `>${boundary} ${unit}s`;
+			? `This is at most ${boundary} ${unit}s away from the answer.`
+			: `This is more than ${boundary} ${unit}s away from the answer.`;
 }
 
 function getDelta(coord1: number, coord2: number) {
@@ -167,15 +176,16 @@ const comparison: {
 </script>
 
 <template>
-	<div :class="`flex flex-col min-w-20 relative p-4 rounded-md justify-center items-center drop-shadow-lg ${comparison.color}`">
-		{{ guess[(column.displayKey ?? column.key) as keyof Wrestler] }}
-		<span v-if="column.key === 'birth_place'">{{
-			getUnicodeFlagIcon(guess.cc)
-		}}</span>
-		<UIcon :name="comparison.icon" class="absolute top-1 right-1" />
-		<p v-if="comparison.infoText" class="text-sm absolute bottom-0 left-1">
-			{{ comparison.infoText }}
-		</p>
-	</div>
+	<Transition name="fade" :style="`transition-delay: ${delay}ms`" appear>
+		<UTooltip :text="comparison.infoText" class="min-w-20">
+			<div
+				:class="`flex flex-col w-full relative p-4 rounded-md justify-center items-center drop-shadow-lg ${comparison.color}`"
+			>
+				{{ guess[(column.displayKey ?? column.key) as keyof Wrestler] }}
+				<span v-if="column.key === 'birth_place'">{{ getUnicodeFlagIcon(guess.cc) }}</span>
+				<UIcon :name="comparison.icon" class="absolute top-1 right-1" />
+			</div>
+		</UTooltip>
+	</Transition>
 </template>
 ~/types/wrestler~/utils/utils
