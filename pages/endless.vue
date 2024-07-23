@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Wrestler } from '~/interfaces/wrestler';
 import Game from '~/assets/game/game';
+import LabelButton from '~/components/common/LabelButton.vue';
 const { data: options } = await useFetch('/api/wrestlers');
 let nameList = options.value
 	?.map((wrestler: Wrestler) => wrestler.name)
@@ -66,7 +67,7 @@ function onSubmit() {
 			<CommonModal
 				v-model="endGameModal"
 				:title="game.victory ? '&quot Yeah!&quot'.replace(' ', '') : '&quot...Really?&quot'"
-				title-class="italic"
+				title-classes="italic"
 			>
 				<p>
 					Game over, you {{ game.victory ? 'won' : 'lost' }}! Try again by exiting this
@@ -80,31 +81,31 @@ function onSubmit() {
 					:disabled="disable"
 					class="w-full mx-auto"
 				/>
-				<UButton
+				<LabelButton
 					type="submit"
-					:disabled="disable"
-					block
-					class="transition ease-in-out duration-300 justify-center bg-primary-500 dark:bg-primary-500 hover:bg-primary-300 dark:hover:bg-primary-900 text-gray-700 dark:text-gray-50 focus-visible:ring-2 focus-visible:outline-0 focus-visible:ring-primary-400 dark:focus-visible:ring-primary-400"
+					size="xl"
+					:disable-cond="disable"
+					class="bg-primary-400 dark:bg-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300"
 				>
 					Submit
-				</UButton>
-				<UButton
-					color="gray"
+				</LabelButton>
+				<LabelButton
+					size="xl"
+					default-color="gray"
 					@click="giveUp"
-					:disabled="disable"
-					block
-					class="transition ease-in-out duration-300 focus-visible:ring-gray-50 dark:focus-visible:ring-gray-500"
+					:disable-cond="disable"
+					:class="`${sizeMap['xl']} bg-gray-400 dark:bg-gray-500 hover:bg-gray-300 dark:hover:bg-gray-700 focus-visible:ring-gray-600 dark:focus-visible:ring-gray-300`"
 				>
 					Give up
-				</UButton>
-				<UButton
+				</LabelButton>
+				<LabelButton
 					v-if="disable"
+					size="xl"
 					@click="newGame"
-					block
-					class="justify-center bg-primary-500 dark:bg-primary-500 hover:bg-primary-600 dark:hover:bg-primary-600 text-gray-700 dark:text-gray-50 focus-visible:ring-2 focus-visible:outline-0 focus-visible:ring-primary-400 dark:focus-visible:ring-primary-400"
+					:class="`${sizeMap['xl']} bg-primary-400 dark:bg-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300`"
 				>
 					New Game
-				</UButton>
+				</LabelButton>
 			</div>
 		</UForm>
 	</Layout>

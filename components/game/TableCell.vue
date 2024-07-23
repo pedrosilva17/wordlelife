@@ -181,7 +181,7 @@ const open = ref(false);
 	<UPopover mode="hover" v-model:open="open" @touchstart="open = !open" class="min-w-20">
 		<Transition name="fade" :style="`transition-delay: ${animationDelay}ms`" appear>
 			<div
-				:class="`flex flex-col w-full relative p-4 rounded-md h-28 justify-center items-center drop-shadow-lg ${comparison.color}`"
+				:class="`transition-opacity flex flex-col w-full relative p-4 rounded-md h-28 justify-center items-center drop-shadow-lg ${comparison.color}`"
 			>
 				{{
 					column.displayKey?.includes('height') && imperialUnits === true

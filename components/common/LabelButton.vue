@@ -1,15 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
 
-const { iconName, aria, type, size, defaultColor } = defineProps({
-	iconName: {
-		type: String,
-		required: true
-	},
-	aria: {
-		type: String,
-		required: true
-	},
+const { type, size, defaultColor } = defineProps({
 	type: {
 		type: String,
 		required: false,
@@ -26,16 +18,16 @@ const { iconName, aria, type, size, defaultColor } = defineProps({
 		default: 'primary'
 	}
 });
+const disableCond = defineModel('disableCond');
 </script>
+
 <template>
 	<UButton
 		:color="defaultColor"
 		:type="type"
-		:aria-label="aria"
-		:icon="iconName"
-		:size="size"
-		square
-		variant="ghost"
-		class="transition ease-in-out duration-300 rounded-md"
-	/>
+		:disabled="disableCond ?? false"
+		:class="`${sizeMap[size]} transition ease-in-out duration-300 justify-center focus-visible:ring-2 focus-visible:outline-0 text-gray-900 dark:text-gray-100`"
+	>
+		<slot></slot>
+	</UButton>
 </template>

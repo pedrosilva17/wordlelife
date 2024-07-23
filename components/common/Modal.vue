@@ -4,7 +4,7 @@ let { title } = defineProps({
 		type: String,
 		required: false
 	},
-	titleClass: {
+	titleClasses: {
 		type: String,
 		required: false
 	}
@@ -16,7 +16,7 @@ const isOpen = defineModel();
 		<section class="flex flex-col relative p-5">
 			<h1
 				v-if="title"
-				:class="`flex w-full text-3xl font-bold justify-center mb-5 ${titleClass}`"
+				:class="`flex w-full text-3xl font-bold justify-center mb-5 ${titleClasses}`"
 			>
 				{{ title }}
 			</h1>
@@ -25,10 +25,10 @@ const isOpen = defineModel();
 			</div>
 		</section>
 		<CommonIconButton
-			v-model="isOpen"
+			@click="isOpen = false"
 			aria="Close"
 			icon-name="i-mdi-close-thick"
-			class="absolute top-5 right-5"
+			class="absolute top-5 right-5 text-primary-500 dark:text-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300"
 		/>
 	</UModal>
 </template>
