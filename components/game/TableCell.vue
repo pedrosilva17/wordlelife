@@ -173,13 +173,15 @@ const comparison: {
 	column.diffType,
 	column.diffBoundary
 );
+
+const open = ref(false);
 </script>
 
 <template>
-	<Transition name="fade" :style="`transition-delay: ${animationDelay}ms`" appear>
-		<UTooltip :text="comparison.infoText" class="min-w-20">
+	<UPopover mode="hover" v-model:open="open" @touchstart="open = !open" class="min-w-20">
+		<Transition name="fade" :style="`transition-delay: ${animationDelay}ms`" appear>
 			<div
-				:class="`flex flex-col w-full relative p-4 rounded-md justify-center items-center drop-shadow-lg ${comparison.color}`"
+				:class="`flex flex-col w-full relative p-4 rounded-md h-28 justify-center items-center drop-shadow-lg ${comparison.color}`"
 			>
 				{{
 					column.displayKey?.includes('height') && imperialUnits === true
@@ -191,7 +193,10 @@ const comparison: {
 				<span v-if="column.key === 'birth_place'">{{ getUnicodeFlagIcon(guess.cc) }}</span>
 				<UIcon :name="comparison.icon" class="absolute top-1 right-1" />
 			</div>
-		</UTooltip>
-	</Transition>
+		</Transition>
+		<template #panel>
+			<div class="p-4">{{ comparison.infoText }}</div>
+		</template>
+	</UPopover>
 </template>
 ~/types/wrestler~/utils/utils
