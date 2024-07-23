@@ -5,4 +5,5 @@ export interface GameState {
 	answer: Wrestler;
 	guesses: Wrestler[];
 	isOver: boolean;
+	victory: boolean;
 }

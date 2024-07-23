@@ -12,7 +12,7 @@ const { guesses, answer } = defineProps({
 		required: true
 	}
 });
-const delay = ref(0);
+
 const columns: GuessColumn[] = [
 	{
 		key: 'name',
@@ -44,14 +44,14 @@ const columns: GuessColumn[] = [
 	},
 	{
 		key: 'height_cm',
-		displayKey: imperialUnits.value ? 'height_ft' : 'height_cm',
+		displayKey: 'height_cm',
 		label: 'Height',
 		diffType: DiffType.Numeric,
 		diffBoundary: 10
 	},
 	{
 		key: 'weight_kg',
-		displayKey: imperialUnits.value ? 'weight_lbs' : 'weight_kg',
+		displayKey: 'weight_kg',
 		label: 'Weight',
 		diffType: DiffType.Numeric,
 		diffBoundary: 15
@@ -83,7 +83,7 @@ const columns: GuessColumn[] = [
 						:column="column"
 						:guess="guess"
 						:answer="answer"
-						:delay="idx * 300"
+						:animation-delay="idx * 300"
 					/>
 				</template>
 			</div>

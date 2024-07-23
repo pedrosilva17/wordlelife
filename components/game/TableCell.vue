@@ -17,7 +17,7 @@ const { column, guess, answer } = defineProps({
 		type: Object as PropType<Wrestler>,
 		required: true
 	},
-	delay: {
+	animationDelay: {
 		type: Number,
 		required: true
 	}
@@ -176,12 +176,18 @@ const comparison: {
 </script>
 
 <template>
-	<Transition name="fade" :style="`transition-delay: ${delay}ms`" appear>
+	<Transition name="fade" :style="`transition-delay: ${animationDelay}ms`" appear>
 		<UTooltip :text="comparison.infoText" class="min-w-20">
 			<div
 				:class="`flex flex-col w-full relative p-4 rounded-md justify-center items-center drop-shadow-lg ${comparison.color}`"
 			>
-				{{ guess[(column.displayKey ?? column.key) as keyof Wrestler] }}
+				{{
+					column.displayKey?.includes('height') && imperialUnits === true
+						? guess['height_ft']
+						: column.displayKey?.includes('weight') && imperialUnits === true
+							? guess['weight_lbs']
+							: guess[(column.displayKey ?? column.key) as keyof Wrestler]
+				}}
 				<span v-if="column.key === 'birth_place'">{{ getUnicodeFlagIcon(guess.cc) }}</span>
 				<UIcon :name="comparison.icon" class="absolute top-1 right-1" />
 			</div>

@@ -7,17 +7,20 @@ export default class Game {
 	answer: Wrestler | null;
 	guesses: Wrestler[];
 	isOver: boolean;
+	victory: boolean;
 	constructor(state: GameState | undefined = undefined) {
 		if (state) {
 			this.idx = state.idx;
 			this.answer = state.answer;
 			this.guesses = state.guesses;
 			this.isOver = state.isOver;
+			this.victory = state.victory;
 		} else {
 			this.idx = 1;
 			this.answer = null;
 			this.guesses = [];
 			this.isOver = false;
+			this.victory = false;
 		}
 	}
 
@@ -28,14 +31,16 @@ export default class Game {
 		this.guesses = [];
 		this.idx = 1;
 		this.isOver = false;
+		this.victory = false;
 	}
 
-	guess(input: Wrestler) {
+	guess(input: Wrestler, isForfeit: boolean = false) {
 		if (!this.answer) return input;
 		console.log('Guess: ', input.name, this.answer.name);
 		this.guesses.unshift(toRaw(input));
 		this.isOver = input.name === this.answer.name;
 		if (!this.isOver) this.idx++;
+		else this.victory = !isForfeit;
 		return input;
 	}
 
@@ -44,7 +49,8 @@ export default class Game {
 			idx: this.idx,
 			answer: this.answer,
 			guesses: this.guesses,
-			isOver: this.isOver
+			isOver: this.isOver,
+			victory: this.victory
 		};
 	}
 }
