@@ -107,7 +107,7 @@ function computeDifference(
 			input = input.replaceAll(/[^a-zA-Z]/g, '');
 			target = target.replaceAll(/[^a-zA-Z]/g, '');
 			diff = target.charCodeAt(0) - input.charCodeAt(0);
-			if (input !== target) diff < 0 ? (diff -= 1) : (diff += 1);
+			if (input !== target && diff == 0) target < input ? (diff -= 1) : (diff += 1);
 			return {
 				color: computeColor(diff, boundary),
 				icon: computeIcon(diff, false),
