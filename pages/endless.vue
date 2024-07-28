@@ -17,6 +17,7 @@ const state = reactive({
 const disable = ref(false);
 const endGameModal = ref(false);
 const guesses: Ref<Wrestler[]> = ref([]);
+guesses.value = []
 
 function giveUp() {
 	if (!game.answer) return;

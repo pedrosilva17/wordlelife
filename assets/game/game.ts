@@ -25,9 +25,8 @@ export default class Game {
 	}
 
 	async start() {
-		await $fetch('/api/wrestlers?action=random').then(
-			(data) => (this.answer = JSON.parse(JSON.stringify(data)))
-		);
+		const { data: answer } = await useFetch<Wrestler>('/api/wrestlers?action=random');
+		this.answer = answer.value;
 		this.guesses = [];
 		this.idx = 1;
 		this.isOver = false;
@@ -37,7 +36,7 @@ export default class Game {
 	guess(input: Wrestler, isForfeit: boolean = false) {
 		if (!this.answer) return input;
 		console.log('Guess: ', input.name, this.answer.name);
-		this.guesses.unshift(toRaw(input));
+		this.guesses.push(toRaw(input));
 		this.isOver = input.name === this.answer.name;
 		if (!this.isOver) this.idx++;
 		else this.victory = !isForfeit;
