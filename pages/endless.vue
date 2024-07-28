@@ -8,22 +8,22 @@ let nameList = options.value
 	.sort((a: string, b: string) => {
 		return a.replaceAll(/[^a-zA-Z]/g, '') > b.replaceAll(/[^a-zA-Z]/g, '');
 	});
-const game = new Game();
+
+const { game } = reactive({
+	game: new Game()
+});
+
 await game.start();
 const state = reactive({
 	input: undefined
 });
 
-const disable = ref(false);
 const endGameModal = ref(false);
-const guesses: Ref<Wrestler[]> = ref([]);
-guesses.value = []
 
 function giveUp() {
 	if (!game.answer) return;
-	disable.value = true;
 	state.input = undefined;
-	guesses.value.push(game.guess(game.answer, true));
+	game.guess(game.answer, true);
 	console.log(game.save());
 	setTimeout(() => {
 		if (game.isOver) endGameModal.value = true;
@@ -31,8 +31,6 @@ function giveUp() {
 }
 
 async function newGame() {
-	guesses.value = [];
-	disable.value = false;
 	nameList = options.value
 		?.map((wrestler: Wrestler) => wrestler.name)
 		.sort((a: string, b: string) => {
@@ -45,9 +43,8 @@ function onSubmit() {
 	const guess = options.value?.find((wrestler: Wrestler) => wrestler.name === state.input);
 	if (!game.answer) return;
 	state.input = undefined;
-	guesses.value.push(game.guess(guess));
+	game.guess(guess);
 	nameList = nameList.filter((name: string) => name !== guess.name);
-	disable.value = game.isOver;
 	console.log(game.save());
 	setTimeout(() => {
 		if (game.isOver) endGameModal.value = true;
@@ -63,7 +60,7 @@ function onSubmit() {
 			@submit="onSubmit"
 			class="flex flex-col space-y-4 w-full h-full items-center justify-center"
 		>
-			<GameGuessTable v-if="game.answer" :guesses="guesses" :answer="game.answer" />
+			<GameGuessTable v-if="game.answer" :guesses="game.guesses" :answer="game.answer" />
 			<!--Passing single and double quotes as a prop is a nightmare. I hate this.-->
 			<CommonModal
 				v-model="endGameModal"
@@ -79,13 +76,13 @@ function onSubmit() {
 				<GameInput
 					v-model="state.input"
 					:options="nameList"
-					:disabled="disable"
+					:disabled="game.isOver"
 					class="w-full mx-auto"
 				/>
 				<LabelButton
 					type="submit"
 					size="xl"
-					:disable-cond="disable"
+					:disable-cond="game.isOver"
 					class="bg-primary-400 dark:bg-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300"
 				>
 					Submit
@@ -94,13 +91,13 @@ function onSubmit() {
 					size="xl"
 					default-color="gray"
 					@click="giveUp"
-					:disable-cond="disable"
+					:disable-cond="game.isOver"
 					:class="`${sizeMap['xl']} bg-gray-400 dark:bg-gray-500 hover:bg-gray-300 dark:hover:bg-gray-700 focus-visible:ring-gray-600 dark:focus-visible:ring-gray-300`"
 				>
 					Give up
 				</LabelButton>
 				<LabelButton
-					v-if="disable"
+					v-if="game.isOver"
 					size="xl"
 					@click="newGame"
 					:class="`${sizeMap['xl']} bg-primary-400 dark:bg-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300`"
