@@ -17,10 +17,8 @@ function cycleColorMode() {
 </script>
 
 <template>
-	<nav class="flex flex-row w-full justify-center py-3 px-3 md:px-10 gap-20 font-oswald text-4xl">
-		<a href="/" class="flex">
-			<span class="text-primary-500">Word</span>le<span class="text-primary-500">Life</span>
-		</a>
+	<nav class="flex flex-row w-full justify-center py-3 px-3 md:px-10 gap-20 text-4xl">
+		<CommonLogo />
 		<div class="flex gap-2">
 			<CommonIconButton
 				@click="isHelpOpen = true"

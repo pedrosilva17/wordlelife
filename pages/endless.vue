@@ -26,7 +26,7 @@ function giveUp() {
 	game.guess(game.answer, true);
 	console.log(game.save());
 	setTimeout(() => {
-		if (game.isOver) endGameModal.value = true;
+		endGameModal.value = true;
 	}, 2500);
 }
 
@@ -61,11 +61,11 @@ function onSubmit() {
 			class="flex flex-col space-y-4 w-full h-full items-center justify-center"
 		>
 			<GameGuessTable v-if="game.answer" :guesses="game.guesses" :answer="game.answer" />
-			<!--Passing single and double quotes as a prop is a nightmare. I hate this.-->
 			<CommonModal
 				v-model="endGameModal"
-				:title="game.victory ? '&quot Yeah!&quot'.replace(' ', '') : '&quot...Really?&quot'"
+				:title="game.victory ? 'Yeah!': '...really?'"
 				title-classes="italic"
+				:img-path="game.victory ? '/images/laknight.webp' : '/images/miz.avif'"
 			>
 				<p>
 					Game over, you {{ game.victory ? 'won' : 'lost' }}! Try again by exiting this

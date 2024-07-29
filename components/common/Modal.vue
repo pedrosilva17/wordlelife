@@ -7,12 +7,16 @@ let { title } = defineProps({
 	titleClasses: {
 		type: String,
 		required: false
-	}
+	},
+	imgPath: {
+		type: String,
+		required: false
+	},
 });
 const isOpen = defineModel();
 </script>
 <template>
-	<UModal v-model="isOpen">
+	<UModal v-model="isOpen" class="my-auto">
 		<section class="flex flex-col relative p-5">
 			<h1
 				v-if="title"
@@ -21,6 +25,7 @@ const isOpen = defineModel();
 				{{ title }}
 			</h1>
 			<div class="flex flex-col flex-1 w-full text-justify gap-5">
+				<NuxtImg v-if="imgPath" preload :src="imgPath" height="300px" />
 				<slot></slot>
 			</div>
 		</section>
