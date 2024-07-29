@@ -183,13 +183,22 @@ const open = ref(false);
 			<div
 				:class="`transition-opacity flex flex-col ${guess[(column.displayKey ?? column.key) as keyof Wrestler].toString().length > 35 ? 'text-sm' : 'text-md'} w-full relative p-4 rounded-md h-28 justify-center items-center drop-shadow-lg ${comparison.color}`"
 			>
-				{{
-					column.displayKey?.includes('height') && imperialUnits === true
-						? guess['height_ft']
-						: column.displayKey?.includes('weight') && imperialUnits === true
-							? guess['weight_lbs']
-							: guess[(column.displayKey ?? column.key) as keyof Wrestler]
-				}}
+				<template v-if="column.key === 'promotion'">
+					<NuxtImg
+						:title="guess['promotion']"
+						:src="`/images/${guess['promotion'].toLowerCase()}.png`"
+						width="100px"
+					/>
+				</template>
+				<template v-else>
+					{{
+						column.displayKey?.includes('height') && imperialUnits === true
+							? guess['height_ft']
+							: column.displayKey?.includes('weight') && imperialUnits === true
+								? guess['weight_lbs']
+								: guess[(column.displayKey ?? column.key) as keyof Wrestler]
+					}}
+				</template>
 				<span v-if="column.key === 'birth_place'">{{ getUnicodeFlagIcon(guess.cc) }}</span>
 				<UIcon :name="comparison.icon" class="absolute top-1 right-1" />
 			</div>

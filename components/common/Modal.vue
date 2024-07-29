@@ -11,7 +11,7 @@ let { title } = defineProps({
 	imgPath: {
 		type: String,
 		required: false
-	},
+	}
 });
 const isOpen = defineModel();
 </script>

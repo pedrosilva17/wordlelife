@@ -63,7 +63,7 @@ function onSubmit() {
 			<GameGuessTable v-if="game.answer" :guesses="game.guesses" :answer="game.answer" />
 			<CommonModal
 				v-model="endGameModal"
-				:title="game.victory ? 'Yeah!': '...really?'"
+				:title="game.victory ? 'Yeah!' : '...really?'"
 				title-classes="italic"
 				:img-path="game.victory ? '/images/laknight.webp' : '/images/miz.avif'"
 			>

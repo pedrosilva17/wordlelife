@@ -51,13 +51,13 @@ function cycleColorMode() {
 					Each category gives you information about how close you are to the answer's
 					corresponding category.<br />
 					A red cell means you're far from the answer, a yellow cell indicates you're
-					close and a green cell shows that the category matches the answer. I you
-					hover/tap on each cell, you can get more clues about how close/far you are from
-					the answer.
+					close and a green cell shows that the category matches the answer. If you hover
+					or tap on each cell, you can get more clues about how close/far you are from the
+					answer.
 				</p>
 				<p>
-					Pay attention to the arrows on the top-right of each cell: Each one tells you
-					how the answer's value is different from your guess in that category.<br />
+					Pay attention to the arrows on the top-right corner of each cell: Each one tells
+					you how the answer's value is different from your guess in that category.<br />
 					For example, an arrow pointing down in the name category means the answer is
 					further down the alphabet compared to your guess, while an arrow pointing to the
 					top-right in the birthplace category means that the answer's hometown is

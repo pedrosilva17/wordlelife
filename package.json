@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
     "format": "prettier . --check",
-    "format-fix": "prettier . --write"
+    "format-fix": "prettier . --write",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@iconify-json/mdi": "^1.1.67",
@@ -26,6 +27,11 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.11",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.7",
     "prettier": "^3.3.2"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": "prettier --write"
   }
 }
