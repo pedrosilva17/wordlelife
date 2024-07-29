@@ -73,7 +73,7 @@ function cycleColorMode() {
 			/>
 			<CommonModal title="Settings" v-model="isSettingsOpen">
 				<section class="flex flex-row justify-between gap-10">
-					<h2 class="flex text-xl font-bold py-1">Unit type</h2>
+					<h2 class="flex text-xl font-bold py-1">Unit system</h2>
 					<span class="flex flex-row justify-end">
 						<CommonLabelButton
 							@click="changeUnits"
