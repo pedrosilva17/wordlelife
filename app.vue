@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useHead({
-	title: 'Wordle Life',
+	title: 'WordleLife',
 	meta: [
 		{
 			name: 'description',

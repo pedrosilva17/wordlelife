@@ -35,7 +35,6 @@ export default class Game {
 
 	guess(input: Wrestler, isForfeit: boolean = false) {
 		if (!this.answer) return input;
-		console.log('Guess: ', input.name, this.answer.name);
 		this.guesses.push(toRaw(input));
 		this.isOver = input.name === this.answer.name;
 		if (!this.isOver) this.idx++;

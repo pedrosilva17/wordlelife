@@ -12,7 +12,6 @@ function changeUnits() {
 function cycleColorMode() {
 	colorIndexCookie.value = (colorIndexCookie.value + 1) % 3;
 	colorMode.preference = modes[colorIndexCookie.value];
-	console.log(colorMode.preference);
 }
 </script>
 

@@ -24,7 +24,6 @@ function giveUp() {
 	if (!game.answer) return;
 	state.input = undefined;
 	game.guess(game.answer, true);
-	console.log(game.save());
 	setTimeout(() => {
 		endGameModal.value = true;
 	}, 2500);
@@ -45,7 +44,6 @@ function onSubmit() {
 	state.input = undefined;
 	game.guess(guess);
 	nameList = nameList.filter((name: string) => name !== guess.name);
-	console.log(game.save());
 	setTimeout(() => {
 		if (game.isOver) endGameModal.value = true;
 	}, 2500);

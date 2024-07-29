@@ -111,7 +111,7 @@ function computeDifference(
 			return {
 				color: computeColor(diff, boundary),
 				icon: computeIcon(diff, false),
-				infoText: computeDiffInfo(diff, 'char', boundary)
+				infoText: computeDiffInfo(diff, 'letter', boundary)
 			};
 		}
 		case DiffType.Binary: {

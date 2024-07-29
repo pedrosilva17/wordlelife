@@ -4,7 +4,7 @@ let db: Database.Database;
 
 export function getDB(): Database.Database {
 	if (!db) {
-		db = new Database('database/database.db', { verbose: console.log });
+		db = new Database('database/database.db');
 	}
 	return db;
 }
