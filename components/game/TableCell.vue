@@ -2,7 +2,8 @@
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import type { PropType } from 'vue';
 import type { Wrestler } from '~/interfaces/wrestler';
-import { DiffType, type GuessColumn } from '@/utils/utils';
+import { DiffType } from '@/utils/utils';
+import type { GuessColumn } from '@/interfaces/guesscolumn';
 
 const { column, guess, answer } = defineProps({
 	column: {

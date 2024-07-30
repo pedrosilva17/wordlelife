@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Wrestler } from '@/interfaces/wrestler';
-import { DiffType, type GuessColumn } from '@/utils/utils';
+import { DiffType } from '@/utils/utils';
+import type { GuessColumn } from '~/interfaces/guesscolumn';
 
 const { guesses, answer } = defineProps({
 	guesses: {
@@ -70,7 +71,7 @@ const columns: GuessColumn[] = [
 	</template>
 	<template v-else>
 		<span
-			class="flex flex-col-reverse max-w-xs sm:max-w-md md:max-w-xl lg:max-w-3xl xl:max-w-[90%] max-h-96 overflow-scroll"
+			class="flex flex-col-reverse max-w-xs sm:max-w-md md:max-w-xl lg:max-w-3xl xl:max-w-[90%] max-h-96 overflow-auto"
 		>
 			<div class="grid w-full gap-3 grid-cols-game">
 				<div v-for="column in columns" :key="column.key" class="border-b">
