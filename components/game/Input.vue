@@ -8,6 +8,13 @@ const { options } = defineProps({
 	}
 });
 
+async function search(q: string) {
+	q = q.toLowerCase();
+	return options.filter(
+		(opt: GameOption) => opt.name.toLowerCase().includes(q) || opt.icon.includes(q)
+	);
+}
+
 const selected = defineModel();
 </script>
 
@@ -19,7 +26,11 @@ const selected = defineModel();
 		placeholder="Choose a wrestler!"
 		:options="options"
 		option-attribute="name"
+		:search="search"
 		:search-attributes="['name', 'icon']"
+		:searchLazy="true"
+		:debounce="500"
+		trailing
 		required
 	>
 		<template #option="{ option: wrestler }">
