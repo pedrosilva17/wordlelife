@@ -1,75 +1,20 @@
-# Nuxt 3 Minimal Starter
+# WordleLife
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Overview
+WordleLife (Wordle + John Cena's [old catchphrase](https://www.youtube.com/watch?v=hOnuxjDML2s&pp=ygUJd29yZCBsaWZl)) is another Wordle-like game similar to Gamedle and Pokédle, but with a wrestling theme. After not finding anything of the sort, I decided to do it myself.
 
-## Setup
+The basic idea is to try to guess a mystery wrestler based on hints around your own guesses. More detailed information about how to play is available on the website.
 
-Make sure to install the dependencies:
+This project was built using Nuxt3, TailwindCSS and the NuxtUI component library.
 
-```bash
-# npm
-npm install
+## Screenshots
+### Main Menu
+![Main Menu](/screenshots/mainmenu.png)
 
-# pnpm
-pnpm install
+### In-game
+![In-game](/screenshots/ingame.png)
 
-# yarn
-yarn install
+## Disclaimer
 
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- I do not own any of the images used on the website. All rights go to their respective owners.
+- The database was build using slightly-corrected information (two or three typos I spotted while skimming through the table) scraped from the [SmackDown Hotel website](https://www.thesmackdownhotel.com/wrestlers/). Apologies for any inaccuracies you might find while playing the game, but I have yet to proofread all of those rows.
