@@ -2,7 +2,6 @@
 import type { Wrestler } from '~/interfaces/wrestler';
 import type { GameOption } from '@/interfaces/gameoption';
 import Game from '~/assets/game/game';
-import LabelButton from '~/components/common/LabelButton.vue';
 import type { Reactive } from 'vue';
 const { data: options } = await useFetch('/api/wrestlers');
 
@@ -45,6 +44,7 @@ async function newGame() {
 
 function onSubmit() {
 	const guess = options.value?.find((wrestler: Wrestler) => wrestler.name === state.input.name);
+	console.log(guess);
 	if (!game.answer) return;
 	state.input = { name: '', icon: '' };
 	game.guess(guess);
@@ -82,15 +82,15 @@ function onSubmit() {
 					:disabled="game.isOver"
 					class="w-full mx-auto"
 				/>
-				<LabelButton
+				<CommonLabelButton
 					type="submit"
 					size="xl"
 					:disable-cond="game.isOver"
 					class="bg-primary-400 dark:bg-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300"
 				>
 					Submit
-				</LabelButton>
-				<LabelButton
+				</CommonLabelButton>
+				<CommonLabelButton
 					size="xl"
 					default-color="gray"
 					@click="giveUp"
@@ -98,15 +98,15 @@ function onSubmit() {
 					:class="`${sizeMap['xl']} bg-gray-400 dark:bg-gray-500 hover:bg-gray-300 dark:hover:bg-gray-700 focus-visible:ring-gray-600 dark:focus-visible:ring-gray-300`"
 				>
 					Give up
-				</LabelButton>
-				<LabelButton
+				</CommonLabelButton>
+				<CommonLabelButton
 					v-if="game.isOver"
 					size="xl"
 					@click="newGame"
 					:class="`${sizeMap['xl']} bg-primary-400 dark:bg-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300`"
 				>
 					New Game
-				</LabelButton>
+				</CommonLabelButton>
 			</div>
 		</UForm>
 	</Layout>

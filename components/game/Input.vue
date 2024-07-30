@@ -1,21 +1,16 @@
 <script setup lang="ts">
+import type { ModelRef } from 'vue';
 import type { GameOption } from '~/interfaces/gameoption';
 
-const { options } = defineProps({
-	options: {
-		type: Array as PropType<GameOption[]>,
-		required: true
-	}
-});
-
-async function search(q: string) {
+function search(q: string) {
 	q = q.toLowerCase();
-	return options.filter(
+	return options.value?.filter(
 		(opt: GameOption) => opt.name.toLowerCase().includes(q) || opt.icon.includes(q)
 	);
 }
 
 const selected = defineModel();
+const options: ModelRef<GameOption[] | undefined> = defineModel('options');
 </script>
 
 <template>
