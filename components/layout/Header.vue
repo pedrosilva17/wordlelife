@@ -30,7 +30,8 @@ function cycleColorMode() {
 				<p>
 					This is a Wordle-like game similar to many others out there, but now you're
 					trying to guess wrestlers. The database is not very big, so if you're a seasoned
-					fan you might figure out the answers quickly.
+					fan you might figure out the answers quickly. Wrestlers are searchable by name
+					or by the promotion they work for.
 				</p>
 				<p>
 					Every time you choose a wrestler, you get some hints about how close your guess

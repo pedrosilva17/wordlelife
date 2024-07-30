@@ -1,28 +1,37 @@
 <script setup lang="ts">
 import type { Wrestler } from '~/interfaces/wrestler';
+import type { GameOption } from '@/interfaces/gameoption';
 import Game from '~/assets/game/game';
 import LabelButton from '~/components/common/LabelButton.vue';
+import type { Reactive } from 'vue';
 const { data: options } = await useFetch('/api/wrestlers');
-let nameList = options.value
-	?.map((wrestler: Wrestler) => wrestler.name)
-	.sort((a: string, b: string) => {
-		return a.replaceAll(/[^a-zA-Z]/g, '') > b.replaceAll(/[^a-zA-Z]/g, '');
-	});
+
+let optionList: GameOption[] = getOptionsList();
 
 const { game } = reactive({
 	game: new Game()
 });
 
 await game.start();
-const state = reactive({
-	input: undefined
+const state: Reactive<{ input: GameOption }> = reactive({
+	input: { name: '', icon: '' }
 });
 
 const endGameModal = ref(false);
 
+function getOptionsList() {
+	return options.value
+		?.map((wrestler: Wrestler) => {
+			return { name: wrestler.name, icon: wrestler.promotion.toLowerCase() };
+		})
+		.sort((a: GameOption, b: GameOption) => {
+			return a.name.replaceAll(/[^a-zA-Z]/g, '') > b.name.replaceAll(/[^a-zA-Z]/g, '');
+		});
+}
+
 function giveUp() {
 	if (!game.answer) return;
-	state.input = undefined;
+	state.input = { name: '', icon: '' };
 	game.guess(game.answer, true);
 	setTimeout(() => {
 		endGameModal.value = true;
@@ -30,20 +39,16 @@ function giveUp() {
 }
 
 async function newGame() {
-	nameList = options.value
-		?.map((wrestler: Wrestler) => wrestler.name)
-		.sort((a: string, b: string) => {
-			return a.replaceAll(/[^a-zA-Z]/g, '') > b.replaceAll(/[^a-zA-Z]/g, '');
-		});
+	optionList = getOptionsList();
 	await game.start();
 }
 
 function onSubmit() {
-	const guess = options.value?.find((wrestler: Wrestler) => wrestler.name === state.input);
+	const guess = options.value?.find((wrestler: Wrestler) => wrestler.name === state.input.name);
 	if (!game.answer) return;
-	state.input = undefined;
+	state.input = { name: '', icon: '' };
 	game.guess(guess);
-	nameList = nameList.filter((name: string) => name !== guess.name);
+	optionList = optionList.filter((option: GameOption) => option.name !== guess.name);
 	setTimeout(() => {
 		if (game.isOver) endGameModal.value = true;
 	}, 2500);
@@ -73,7 +78,7 @@ function onSubmit() {
 			<div class="flex flex-col w-64 gap-3 justify-center">
 				<GameInput
 					v-model="state.input"
-					:options="nameList"
+					:options="optionList"
 					:disabled="game.isOver"
 					class="w-full mx-auto"
 				/>
