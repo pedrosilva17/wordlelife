@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  wordlelife:
+    container_name: wordlelife
+    image: wordlelife
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 3003:3003
