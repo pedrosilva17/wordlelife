@@ -24,10 +24,6 @@ const { column, guess, answer } = defineProps({
 	}
 });
 
-function enter(el: Element, done: Function) {
-	done();
-}
-
 function isClose(diff: number, boundary: number = 0) {
 	return Math.abs(diff) <= boundary;
 }
@@ -188,6 +184,7 @@ const open = ref(false);
 					<NuxtImg
 						:title="guess['promotion']"
 						:src="`/images/${guess['promotion'].toLowerCase()}.png`"
+						:alt="`${guess['promotion']} company logo`"
 						width="100px"
 					/>
 				</template>

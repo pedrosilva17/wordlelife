@@ -19,6 +19,7 @@ const { route, imgPath } = defineProps({
 		<NuxtImg
 			preload
 			:src="imgPath"
+			alt="Wrestling action shot"
 			sizes="300px md:500px"
 			class="opacity-30 object-cover object-top blur-[2px] group-hover:blur-none group-hover:animate-pulse group-focus:blur-none group-focus:animate-pulse absolute m-auto w-full h-full right-0 left-0 justify-center rounded-md"
 		/>
