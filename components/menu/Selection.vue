@@ -14,7 +14,7 @@ const { route, imgPath } = defineProps({
 <template>
 	<ULink
 		:to="route"
-		class="group relative flex rounded-md w-64 h-64 md:w-2/6 gap-5 justify-center transition ease-in-out hover:scale-105 focus:scale-105 bg-primary-500 hover:bg-primary-400 dark:hover:bg-primary-600 rounded-md"
+		class="group relative flex rounded-md w-64 h-64 md:w-2/6 gap-5 justify-center transition ease-in-out hover:scale-105 focus:scale-105 bg-primary-400 dark:bg-primary-600 rounded-md"
 	>
 		<NuxtImg
 			preload

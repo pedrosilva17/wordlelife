@@ -7,7 +7,10 @@ useHead({
 			content:
 				'A Wordle-like game about guessing wrestlers based on their personal information.'
 		}
-	]
+	],
+	htmlAttrs: {
+		lang: 'en'
+	}
 });
 </script>
 

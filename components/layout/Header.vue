@@ -17,7 +17,7 @@ function cycleColorMode() {
 
 <template>
 	<nav class="flex flex-row w-full justify-center py-3 px-3 md:px-10 gap-20 text-4xl">
-		<CommonLogo />
+		<CommonLogo v-if="$route.fullPath !== '/'" />
 		<div class="flex gap-2">
 			<CommonIconButton
 				@click="isHelpOpen = true"
