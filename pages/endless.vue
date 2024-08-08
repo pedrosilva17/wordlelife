@@ -44,7 +44,6 @@ async function newGame() {
 
 function onSubmit() {
 	const guess = options.value?.find((wrestler: Wrestler) => wrestler.name === state.input.name);
-	console.log(guess);
 	if (!game.answer) return;
 	state.input = { name: '', icon: '' };
 	game.guess(guess);
