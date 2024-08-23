@@ -17,4 +17,4 @@ This project was built using Nuxt3, TailwindCSS and the NuxtUI component library
 ## Disclaimer
 
 - I do not own any of the images used on the website. All rights go to their respective owners.
-- The database was build using slightly-corrected information (two or three typos I spotted while skimming through the table) scraped from the [SmackDown Hotel website](https://www.thesmackdownhotel.com/wrestlers/). Apologies for any inaccuracies you might find while playing the game, but I have yet to proofread all of those rows.
+- The database was built using slightly corrected information (two or three typos I spotted while skimming through the table) scraped from the [SmackDown Hotel website](https://www.thesmackdownhotel.com/wrestlers/). Apologies for any inaccuracies you might find while playing the game, but I have yet to proofread all of those rows.
