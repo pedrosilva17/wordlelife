@@ -28,7 +28,13 @@ const isOpen = defineModel<boolean>();
 				{{ title }}
 			</h1>
 			<div class="flex flex-col flex-1 w-full text-justify gap-5">
-				<NuxtImg preload :src="imgPath" alt="Modal decorative image" height="300px" />
+				<NuxtImg
+					v-if="imgPath"
+					preload
+					:src="imgPath"
+					alt="Modal decorative image"
+					height="300px"
+				/>
 				<slot />
 			</div>
 		</section>
