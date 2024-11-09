@@ -67,7 +67,7 @@ function onSubmit() {
 				v-model="endGameModal"
 				:title="game.victory ? 'Yeah!' : '...really?'"
 				title-classes="italic"
-				:img-path="game.victory ? '/images/laknight.webp' : '/images/miz.avif'"
+				:img-path="game.victory ? '/images/laknight.png' : '/images/miz.png'"
 			>
 				<p>
 					Game over, you {{ game.victory ? 'won' : 'lost' }}! Try again by exiting this

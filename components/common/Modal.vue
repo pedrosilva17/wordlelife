@@ -1,19 +1,22 @@
 <script setup lang="ts">
-let { title } = defineProps({
+const { title } = defineProps({
 	title: {
 		type: String,
-		required: false
+		required: false,
+		default: ''
 	},
 	titleClasses: {
 		type: String,
-		required: false
+		required: false,
+		default: ''
 	},
 	imgPath: {
 		type: String,
-		required: false
+		required: false,
+		default: ''
 	}
 });
-const isOpen = defineModel();
+const isOpen = defineModel<boolean>();
 </script>
 <template>
 	<UModal v-model="isOpen" class="my-auto">
@@ -25,20 +28,14 @@ const isOpen = defineModel();
 				{{ title }}
 			</h1>
 			<div class="flex flex-col flex-1 w-full text-justify gap-5">
-				<NuxtImg
-					v-if="imgPath"
-					preload
-					:src="imgPath"
-					alt="Wrestler cutting a promo"
-					height="300px"
-				/>
-				<slot></slot>
+				<NuxtImg preload :src="imgPath" alt="Modal decorative image" height="300px" />
+				<slot />
 			</div>
 		</section>
 		<CommonIconButton
-			@click="isOpen = false"
 			aria="Close"
 			icon-name="i-mdi-close-thick"
+			@click="isOpen = false"
 			class="absolute top-5 right-5 text-primary-500 dark:text-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300"
 		/>
 	</UModal>
