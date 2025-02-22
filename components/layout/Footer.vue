@@ -2,7 +2,7 @@
 
 <template>
 	<footer class="p-3 text-center">
-		Made with <UIcon name="i-mdi-heart" dynamic class="text-primary-500" /> by
+		Made with <UIcon name="i-mdi-heart" dynamic class="text-primary-500 mb-1" /> by
 		<ULink
 			target="_blank"
 			to="https://frompedrosilva.com"

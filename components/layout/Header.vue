@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { isGameStarted } from '@/utils/utils';
+
 const isHelpOpen = ref(false);
 const isSettingsOpen = ref(false);
 const modes = ['system', 'light', 'dark'];
@@ -8,6 +10,11 @@ colorIndexCookie.value = colorIndexCookie.value || 0;
 
 function changeUnits() {
 	return (useImperialUnits.value = !useImperialUnits.value);
+}
+function changeDifficulty() {
+	if (!isGameStarted.value) {
+		useHardMode.value = !useHardMode.value;
+	}
 }
 function cycleColorMode() {
 	colorIndexCookie.value = (colorIndexCookie.value + 1) % 3;
@@ -65,25 +72,41 @@ function cycleColorMode() {
 				</p>
 			</CommonModal>
 			<CommonIconButton
-				@click="isSettingsOpen = true"
 				aria="Settings"
 				icon-name="i-mdi-cog"
 				size="md"
 				class="text-primary-500 dark:text-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300"
+				@click="isSettingsOpen = true"
 			/>
 			<CommonModal title="Settings" v-model="isSettingsOpen">
 				<section class="flex flex-row justify-between gap-10">
 					<h2 class="flex text-xl font-bold py-1">Unit system</h2>
 					<span class="flex flex-row justify-end">
 						<CommonLabelButton
-							@click="changeUnits"
 							size="md"
 							class="bg-primary-400 dark:bg-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300"
+							@click="changeUnits"
 						>
 							{{ useImperialUnits ? 'Imperial' : 'Metric' }}
 						</CommonLabelButton>
 					</span>
 				</section>
+				<section class="flex flex-row justify-between gap-10">
+					<h2 class="flex text-xl font-bold py-1">Difficulty</h2>
+					<span class="flex flex-row justify-end">
+						<CommonLabelButton
+							:disabled="isGameStarted"
+							size="md"
+							@click="changeDifficulty"
+							class="bg-primary-400 dark:bg-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300 disabled:opacity-50 disabled:cursor-not-allowed"
+						>
+							{{ useHardMode ? 'Hard' : 'Easy' }}
+						</CommonLabelButton>
+					</span>
+				</section>
+				<p class="text-start text-gray-700 dark:text-gray-300 -mt-4 w-1/2">
+					Hard mode disables hints regarding the wrestler's name.
+				</p>
 				<section class="flex flex-row justify-between gap-10">
 					<h2 class="flex text-xl font-bold py-1">Dark mode</h2>
 					<span class="relative flex flex-1 flex-row justify-end">
@@ -93,27 +116,27 @@ function cycleColorMode() {
 								aria="Toggle Color Mode - System"
 								title="System"
 								icon-name="i-mdi-laptop"
-								@click="cycleColorMode"
 								size="md"
 								class="absolute right-0 text-primary-500 dark:text-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300"
+								@click="cycleColorMode"
 							/>
 							<CommonIconButton
 								v-else-if="colorIndexCookie === 1"
 								aria="Toggle Color Mode - Light"
 								title="Light"
 								icon-name="i-mdi-white-balance-sunny"
-								@click="cycleColorMode"
 								size="md"
 								class="absolute right-0 text-primary-500 dark:text-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300"
+								@click="cycleColorMode"
 							/>
 							<CommonIconButton
-								v-else="colorIndexCookie === 2"
+								v-else-if="colorIndexCookie === 2"
 								aria="Toggle Color Mode - Dark"
 								title="Dark"
 								icon-name="i-mdi-moon-waning-crescent"
-								@click="cycleColorMode"
 								size="md"
 								class="absolute right-0 text-primary-500 dark:text-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300"
+								@click="cycleColorMode"
 							/>
 						</Transition>
 					</span>

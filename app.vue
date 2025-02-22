@@ -12,6 +12,8 @@ useHead({
 		lang: 'en'
 	}
 });
+
+initializeSettings();
 </script>
 
 <template>

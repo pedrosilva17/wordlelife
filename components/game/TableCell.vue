@@ -2,7 +2,7 @@
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import type { PropType } from 'vue';
 import type { Wrestler } from '~/interfaces/wrestler';
-import { DiffType, useImperialUnits } from '@/utils/utils';
+import { DiffType, useImperialUnits, useHardMode } from '@/utils/utils';
 import { computed } from 'vue';
 import type { GuessColumn } from '@/interfaces/guesscolumn';
 
@@ -67,6 +67,7 @@ function computeDiffInfo(
 	boundary: number | undefined = undefined
 ) {
 	if (diff === 0) return 'Correct!';
+	if (useHardMode.value && column.key === 'name') return 'Wrong.';
 	const displayBoundary = computed(() => {
 		if (!boundary) return boundary;
 		switch (column.key) {
@@ -124,8 +125,8 @@ function computeDifference(
 			diff = target.charCodeAt(0) - input.charCodeAt(0);
 			if (input !== target && diff == 0) target < input ? (diff -= 1) : (diff += 1);
 			return {
-				color: computeColor(diff, boundary),
-				icon: computeIcon(diff, false),
+				color: computeColor(diff, useHardMode.value ? 0 : boundary),
+				icon: computeIcon(diff, useHardMode.value),
 				infoText: computeDiffInfo(diff, 'positions in the alphabet', boundary)
 			};
 		}

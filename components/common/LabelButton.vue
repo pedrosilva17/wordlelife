@@ -18,7 +18,7 @@ const { type, size, defaultColor } = defineProps({
 		default: 'primary'
 	}
 });
-const disableCond = defineModel('disableCond');
+const disableCond = defineModel<boolean>('disableCond');
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Wrestler } from '~/interfaces/wrestler';
 import type { GameOption } from '@/interfaces/gameoption';
+import { isGameStarted } from '@/utils/utils';
 import Game from '~/assets/game/game';
 import type { Reactive } from 'vue';
 const { data: options } = await useFetch('/api/wrestlers');
@@ -40,11 +41,16 @@ function giveUp() {
 async function newGame() {
 	optionList = getOptionsList();
 	await game.start();
+	isGameStarted.value = false;
 }
 
 function onSubmit() {
 	const guess = options.value?.find((wrestler: Wrestler) => wrestler.name === state.input.name);
 	if (!game.answer) return;
+
+	if (!isGameStarted.value) {
+		isGameStarted.value = true;
+	}
 	state.input = { name: '', icon: '' };
 	game.guess(guess);
 	optionList = optionList.filter((option: GameOption) => option.name !== guess.name);
