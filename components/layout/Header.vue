@@ -7,7 +7,7 @@ const colorIndexCookie = useCookie<number>('colorIndexCookie');
 colorIndexCookie.value = colorIndexCookie.value || 0;
 
 function changeUnits() {
-	return (imperialUnits.value = !imperialUnits.value);
+	return (useImperialUnits.value = !useImperialUnits.value);
 }
 function cycleColorMode() {
 	colorIndexCookie.value = (colorIndexCookie.value + 1) % 3;
@@ -20,10 +20,10 @@ function cycleColorMode() {
 		<CommonLogo v-if="$route.fullPath !== '/'" />
 		<div class="flex gap-2">
 			<CommonIconButton
-				@click="isHelpOpen = true"
 				aria="Help"
 				icon-name="i-mdi-help-circle"
 				size="md"
+				@click="isHelpOpen = true"
 				class="text-primary-500 dark:text-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300"
 			/>
 			<CommonModal title="Help" v-model="isHelpOpen">
@@ -80,7 +80,7 @@ function cycleColorMode() {
 							size="md"
 							class="bg-primary-400 dark:bg-primary-500 hover:bg-primary-300 dark:hover:bg-primary-700 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-300"
 						>
-							{{ imperialUnits ? 'Imperial' : 'Metric' }}
+							{{ useImperialUnits ? 'Imperial' : 'Metric' }}
 						</CommonLabelButton>
 					</span>
 				</section>

@@ -5,7 +5,7 @@ export enum DiffType {
 	Numeric
 }
 
-export const imperialUnits = ref(true);
+export const useImperialUnits = ref(true);
 export const toRadians = (v: number) => (v * Math.PI) / 180;
 export type Color = 'primary' | 'gray' | 'green' | 'yellow' | 'red';
 export const sizeMap = {

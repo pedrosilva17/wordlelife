@@ -14,55 +14,59 @@ const { guesses, answer } = defineProps({
 	}
 });
 
-const columns: GuessColumn[] = [
-	{
-		key: 'name',
-		label: 'Name',
-		diffType: DiffType.Alphabetical,
-		diffBoundary: 4 // difference between ascii code of first letter
-	},
-	{
-		key: 'gender',
-		label: 'Gender',
-		diffType: DiffType.Binary
-	},
-	{
-		key: 'age',
-		label: 'Age',
-		diffType: DiffType.Numeric,
-		diffBoundary: 3
-	},
-	{
-		key: 'birth_place',
-		label: 'Birthplace',
-		diffType: DiffType.Coords,
-		diffBoundary: 1000 // km
-	},
-	{
-		key: 'billed_from',
-		label: 'Billed from',
-		diffType: DiffType.Binary
-	},
-	{
-		key: 'height_cm',
-		displayKey: 'height_cm',
-		label: 'Height',
-		diffType: DiffType.Numeric,
-		diffBoundary: 10
-	},
-	{
-		key: 'weight_kg',
-		displayKey: 'weight_kg',
-		label: 'Weight',
-		diffType: DiffType.Numeric,
-		diffBoundary: 15
-	},
-	{
-		key: 'promotion',
-		label: 'Promotion',
-		diffType: DiffType.Binary
-	}
-];
+console.log(answer.height_ft);
+
+const columns: ComputedRef<GuessColumn[]> = computed(() => {
+	return [
+		{
+			key: 'name',
+			label: 'Name',
+			diffType: DiffType.Alphabetical,
+			diffBoundary: 4
+		},
+		{
+			key: 'gender',
+			label: 'Gender',
+			diffType: DiffType.Binary
+		},
+		{
+			key: 'age',
+			label: 'Age',
+			diffType: DiffType.Numeric,
+			diffBoundary: 5
+		},
+		{
+			key: 'birth_place',
+			label: 'Birthplace',
+			diffType: DiffType.Coords,
+			diffBoundary: 1000 // km
+		},
+		{
+			key: 'billed_from',
+			label: 'Billed from',
+			diffType: DiffType.Binary
+		},
+		{
+			key: 'height_cm',
+			displayKey: 'height_cm',
+			label: 'Height',
+			diffType: DiffType.Numeric,
+			diffBoundary: 10 // cm
+		},
+		{
+			key: 'weight_kg',
+			displayKey: 'weight_kg',
+			label: 'Weight',
+			diffType: DiffType.Numeric,
+			diffBoundary: 15 // kg
+		},
+		{
+			key: 'promotion',
+			label: 'Promotion',
+			diffType: DiffType.Binary
+		}
+	];
+});
 </script>
 
 <template>

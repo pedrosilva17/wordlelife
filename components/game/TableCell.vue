@@ -2,7 +2,8 @@
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import type { PropType } from 'vue';
 import type { Wrestler } from '~/interfaces/wrestler';
-import { DiffType } from '@/utils/utils';
+import { DiffType, useImperialUnits } from '@/utils/utils';
+import { computed } from 'vue';
 import type { GuessColumn } from '@/interfaces/guesscolumn';
 
 const { column, guess, answer } = defineProps({
@@ -66,11 +67,27 @@ function computeDiffInfo(
 	boundary: number | undefined = undefined
 ) {
 	if (diff === 0) return 'Correct!';
-	return !boundary
-		? 'Wrong.'
-		: isClose(diff, boundary)
-			? `This is at most ${boundary} ${unit}s away from the answer.`
-			: `This is more than ${boundary} ${unit}s away from the answer.`;
+	const displayBoundary = computed(() => {
+		if (!boundary) return boundary;
+		switch (column.key) {
+			case 'birth_place':
+				return useImperialUnits.value ? Math.round(boundary * 0.621371) : boundary; // km to miles
+			case 'height_cm':
+				return useImperialUnits.value ? Math.round(boundary * 0.393701) : boundary; // cm to inches
+			case 'weight_kg':
+				return useImperialUnits.value ? Math.round(boundary * 2.20462) : boundary; // kg to lbs
+			default:
+				return boundary;
+		}
+	});
+
+	return computed(() =>
+		!boundary
+			? 'Wrong.'
+			: isClose(diff, boundary)
+				? `This is at most ${displayBoundary.value} ${unit} away from the answer.`
+				: `This is more than ${displayBoundary.value} ${unit} away from the answer.`
+	);
 }
 
 function getDelta(coord1: number, coord2: number) {
@@ -96,7 +113,8 @@ function computeDifference(
 	input: string,
 	target: string,
 	type: DiffType,
-	boundary: number | undefined
+	boundary: number | undefined,
+	isImperialUnit: boolean
 ) {
 	let diff = 0;
 	switch (type) {
@@ -108,7 +126,7 @@ function computeDifference(
 			return {
 				color: computeColor(diff, boundary),
 				icon: computeIcon(diff, false),
-				infoText: computeDiffInfo(diff, 'letter', boundary)
+				infoText: computeDiffInfo(diff, 'positions in the alphabet', boundary)
 			};
 		}
 		case DiffType.Binary: {
@@ -129,25 +147,25 @@ function computeDifference(
 					getDelta(targetPoint[0], inputPoint[0]),
 					getDelta(targetPoint[1], inputPoint[1])
 				),
-				infoText: computeDiffInfo(diff, 'km', boundary)
+				infoText: computeDiffInfo(diff, isImperialUnit ? 'mi' : 'kms', boundary)
 			};
 		}
 		case DiffType.Numeric: {
 			input = input.replaceAll(/[a-zA-Z]/g, '').trim();
 			target = target.replaceAll(/[a-zA-Z]/g, '').trim();
 			diff = parseInt(input) - parseInt(target);
-			let unit = 'unit';
+			let unit = 'units';
 			switch (column.key) {
 				case 'age': {
-					unit = 'year';
+					unit = 'years';
 					break;
 				}
 				case 'height_cm': {
-					unit = 'cm';
+					unit = isImperialUnit ? 'in' : 'cm';
 					break;
 				}
 				case 'weight_kg': {
-					unit = 'kg';
+					unit = isImperialUnit ? 'lbs' : 'kg';
 					break;
 				}
 			}
@@ -160,16 +178,22 @@ function computeDifference(
 	}
 }
 
-const comparison: {
+const comparison: ComputedRef<{
 	color: string;
 	icon: string;
-	infoText: string;
-} = computeDifference(
-	guess[column.key as keyof Wrestler].toString(),
-	answer[column.key as keyof Wrestler].toString(),
-	column.diffType,
-	column.diffBoundary
-);
+	infoText: string | ComputedRef<string>;
+}> = computed(() => {
+	const isImperial = useImperialUnits.value;
+
+	return computeDifference(
+		guess[column.key as keyof Wrestler].toString(),
+		answer[column.key as keyof Wrestler].toString(),
+		column.diffType,
+		// Proximity calculations are done using metric units, for simplicity. imperial units are used for display purposes if wanted by the user.
+		column.diffBoundary,
+		isImperial
+	);
+});
 
 const open = ref(false);
 </script>
@@ -178,7 +202,7 @@ const open = ref(false);
 	<UPopover mode="hover" v-model:open="open" @touchstart="open = !open" class="min-w-20">
 		<Transition name="fade" :style="`transition-delay: ${animationDelay}ms`" appear>
 			<div
-				:class="`transition-opacity flex flex-col ${guess[(column.displayKey ?? column.key) as keyof Wrestler].toString().length > 35 ? 'text-sm' : 'text-md'} w-full relative p-4 rounded-md h-28 justify-center items-center drop-shadow-lg ${comparison.color}`"
+				:class="`transition-opacity flex flex-col ${guess[(column.displayKey ?? column.key) as keyof Wrestler].toString().length > 30 ? 'text-sm' : 'text-base'} w-full relative p-4 rounded-md h-28 justify-center items-center drop-shadow-lg ${comparison.color}`"
 			>
 				<template v-if="column.key === 'promotion'">
 					<NuxtImg
@@ -190,9 +214,9 @@ const open = ref(false);
 				</template>
 				<template v-else>
 					{{
-						column.displayKey?.includes('height') && imperialUnits === true
+						column.displayKey?.includes('height') && useImperialUnits === true
 							? guess['height_ft']
-							: column.displayKey?.includes('weight') && imperialUnits === true
+							: column.displayKey?.includes('weight') && useImperialUnits === true
 								? guess['weight_lbs']
 								: guess[(column.displayKey ?? column.key) as keyof Wrestler]
 					}}
