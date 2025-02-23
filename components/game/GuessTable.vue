@@ -14,8 +14,6 @@ const { guesses, answer } = defineProps({
 	}
 });
 
-console.log(answer.height_ft);
-
 const columns: ComputedRef<GuessColumn[]> = computed(() => {
 	return [
 		{

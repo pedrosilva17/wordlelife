@@ -20,7 +20,7 @@ def connection_close(connection: sqlite3.Connection, cursor: sqlite3.Cursor):
 def create_database(sql_path, db_path):
     with open(sql_path, "r", encoding="utf-8") as file:
         sql_commands = file.read()
-        
+
     connection, cursor = connection_open(db_path)
     try:
         cursor.executescript(sql_commands)
@@ -29,18 +29,18 @@ def create_database(sql_path, db_path):
         print(f"Error creating database: {e}")
     finally:
         connection.close()
-        
+
 def check_existing(table_name, column, value):
     connection, cursor = connection_open("database/database.db")
     cursor.execute(f"""SELECT exists(SELECT 1 FROM {table_name} WHERE {column}=?) AS row_check;""", (value,))
-    if cursor.fetchone()[0]: 
+    if cursor.fetchone()[0]:
         print(f"Skipped {value}, already exists in db")
         connection_close(connection, cursor)
         return True
     connection_close(connection, cursor)
     return False
-    
-    
+
+
 def save(table):
     connection, cursor = connection_open("database/database.db")
     for value_group in zip(*table["values"]):
@@ -80,36 +80,47 @@ def get_wrestler_value(container, css_class, with_entry=False, num_outputs=1, sp
         return value.split(split_sep) if split_sep else value
     except AttributeError:
         return "Unknown" if num_outputs == 1 else ["Unknown"] * num_outputs
-        
-    
+
+
 def parse_wrestler(html):
     soup = BeautifulSoup(html, 'html.parser')
     container_personal = soup.find('ul', { 'class': 'fields-container' })
+    if not container_personal: return -1
     container_career = soup.select('h2 + div > ul.fields-container')[1]
-    
-    name = container_personal.find('span', { 'class': 'name' }).get_text().strip()
+
+    try:
+        name = container_personal.find('span', { 'class': 'name' }).get_text().strip()
+    except AttributeError:
+        return -1
     gender = get_wrestler_value(container_personal, 'gender')
-    
+
     dob, age = map(lambda x: x.strip(), get_wrestler_value(container_personal, 'born', num_outputs=2, split_sep='('))
     age = re.sub('[^0-9]', "", age)
     if age == "": age = 0
-    
+
     nom = Nominatim(user_agent="wrestler-db")
     birth_place = get_wrestler_value(container_personal, 'birth-place')
     billed_from = get_wrestler_value(container_personal, 'billed-from', with_entry=True)
 
-    location = get_coordinates(nom, birth_place)
-    if location:
-        lat, long = location.latitude, location.longitude
-        country = nom.reverse(f'{lat}, {long}', language='en').raw['address']['country']
-        cc = pycountry.countries.search_fuzzy(country)[0].alpha_2
-    else:
-        lat, long = 0, 0
-        country = "Unknown"
-        cc = "Unknown"
-    
+    success = False
+    while not success:
+        try:
+            location = get_coordinates(nom, birth_place)
+            success = True
+            if location:
+                lat, long = location.latitude, location.longitude
+                country = nom.reverse(f'{lat}, {long}', language='en').raw['address']['country']
+                cc = pycountry.countries.search_fuzzy(country)[0].alpha_2
+            else:
+                lat, long = 0, 0
+                country = "Unknown"
+                cc = "Unknown"
+        except:
+            time.sleep(1)
+            continue
+
     height_ft, height_cm = map(lambda x: re.sub("[()]", "", x), get_wrestler_value(container_personal, 'height', num_outputs=2, split_sep=' ('))
-    
+
     try:
         weight_lbs, weight_kg = map(lambda x: re.sub("[()]", "", x), get_wrestler_value(container_personal, 'weight', num_outputs=2, split_sep=' ('))
     except ValueError:
@@ -119,26 +130,24 @@ def parse_wrestler(html):
     promotion = get_wrestler_value(container_career, 'companies', with_entry=True).replace('IMPACT', 'TNA')
     alignment = get_wrestler_value(container_career, 'alignments', with_entry=True)
     finisher = get_wrestler_value(soup, 'finishers', with_entry=True)
-    theme_name = get_wrestler_value(soup, 'theme-songs', with_entry=True)
     if 'Unknown' in [weight_kg, height_cm, country, finisher] or age == 0: return -1
-    try:
-        theme_link = VideosSearch(f'{theme_name} {name} entrance theme', limit=1).result()['result'][0]['link']
-    except IndexError:
-        theme_link = VideosSearch(f"{name} entrance theme", limit=1).result()['result'][0]['link']
-    return [[name], [age], [gender], [dob], [birth_place], [country], [cc], [lat], [long], [billed_from], [height_ft], [height_cm], [weight_lbs], [weight_kg], [nicknames], [promotion], [alignment], [finisher], [theme_link]]
+    return [[name], [age], [gender], [dob], [birth_place], [country], [cc], [lat], [long], [billed_from], [height_ft], [height_cm], [weight_lbs], [weight_kg], [nicknames], [promotion], [alignment], [finisher]]
 
 def fetch(url, filename, wait_js=False, wait_selector=None):
     if wait_js:
         with sync_playwright() as p:
             browser = p.chromium.launch()
             page = browser.new_page()
-            
+
             page.goto(url)
             page.wait_for_selector(wait_selector)
 
             html_content = page.content()
+            print(html_content)
             with open(f'external/html/{filename}.html', 'w', encoding='utf-8') as file:
                 file.write(html_content)
+            if not os.path.exists(f'external/html/{filename}.html'):
+                raise RuntimeError(f"Error saving file {filename}.html")
             browser.close()
             return html_content
     else:
@@ -157,34 +166,32 @@ def fetch(url, filename, wait_js=False, wait_selector=None):
             return print(f"Error fetching HTML: {e}")
 
 if __name__ == "__main__":
-    if os.path.isfile(f'database/dump.sql'):
-        print('Database dump exists, importing')
-        create_database('database/dump.sql', 'database/database.db')
-    else:
-        create_database('database/database.sql', 'database/database.db')
-        wrestler_table = {
-            "name": "Wrestlers",
-            "columns": ["name", "age", "gender", "date_of_birth", "birth_place", "country", "cc", "latitude", "longitude", "billed_from", "height_ft", "height_cm", "weight_lbs", "weight_kg", "nicknames", "promotion", "alignment", "finisher", "theme_song"],
-        }
-        for i in range(1, 4):
-            url = f"https://www.thesmackdownhotel.com/wrestlers/#sort=attr.ct176.frontend_value\
-            &sortdir=asc&attr.ct39.value=wwe%2Caew%2Ctna\
-            &attr.ct60.value=wrestler&page={i}".replace(" ", "")
-            print(url)
-            if not os.path.isfile(f'external/html/wrestlers_{i}.html'):
-                wrestlers_html = fetch(url, f'wrestlers_{i}', True, '.product-items')
-                get_wrestlers(wrestlers_html)
-        wrestler_file_list = os.listdir('external/html/wrestlers')
-        for wrestler_file in wrestler_file_list:
-            with open(f'external/html/wrestlers/{wrestler_file}') as file:
-                wrestler_html = file.read()
-            print("Parsing ", wrestler_file)
-            soup = BeautifulSoup(wrestler_html, 'html.parser')
+    create_database('database/database.sql', 'database/database.db')
+    wrestler_table = {
+        "name": "Wrestlers",
+        "columns": ["name", "age", "gender", "date_of_birth", "birth_place", "country", "cc", "latitude", "longitude", "billed_from", "height_ft", "height_cm", "weight_lbs", "weight_kg", "nicknames", "promotion", "alignment", "finisher"],
+    }
+    for i in range(1, 4):
+        url = f"https://www.thesmackdownhotel.com/wrestlers/#sort=attr.ct176.frontend_value&sortdir=asc&attr.ct60.value=wrestler&attr.ct187.value=wwe%2Caew%2Ctna&page={i}".replace(" ", "")
+        print(url)
+        if not os.path.exists(f'external/html/wrestlers_{i}.html'):
+            wrestlers_html = fetch(url, f'wrestlers_{i}', True, '.product-items')
+            get_wrestlers(wrestlers_html)
+    wrestler_file_list = [f for f in os.listdir('external/html/wrestlers') if f != '.gitkeep']
+    print(wrestler_file_list)
+    for wrestler_file in wrestler_file_list:
+        with open(f'external/html/wrestlers/{wrestler_file}') as file:
+            wrestler_html = file.read()
+        print("Parsing ", wrestler_file)
+        soup = BeautifulSoup(wrestler_html, 'html.parser')
+        try:
             container_personal = soup.find('ul', { 'class': 'fields-container' })
             name = container_personal.find('span', { 'class': 'name' }).get_text().strip()
-            # if check_existing("Wrestlers", "name", name): continue
-            output = parse_wrestler(wrestler_html)
-            print("output: ", output)
-            if output == -1: continue
-            wrestler_table['values'] = output
-            save(wrestler_table)
+            if check_existing("Wrestlers", "name", name): continue
+        except AttributeError:
+            continue
+        output = parse_wrestler(wrestler_html)
+        print("output: ", output)
+        if output == -1: continue
+        wrestler_table['values'] = output
+        save(wrestler_table)

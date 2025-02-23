@@ -104,7 +104,7 @@ function cycleColorMode() {
 						</CommonLabelButton>
 					</span>
 				</section>
-				<p class="text-start text-gray-700 dark:text-gray-300 -mt-4 w-1/2">
+				<p class="text-start text-sm text-gray-700 dark:text-gray-300 -mt-4 w-1/2">
 					Hard mode disables hints regarding the wrestler's name.
 				</p>
 				<section class="flex flex-row justify-between gap-10">

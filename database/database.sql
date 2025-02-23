@@ -20,5 +20,4 @@ CREATE TABLE Wrestlers (
     promotion TEXT,
     alignment TEXT,
     finisher TEXT,
-    theme_song TEXT
 );

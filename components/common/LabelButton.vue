@@ -28,6 +28,6 @@ const disableCond = defineModel<boolean>('disableCond');
 		:disabled="disableCond ?? false"
 		:class="`${sizeMap[size]} transition ease-in-out duration-300 justify-center focus-visible:ring-2 focus-visible:outline-0 text-gray-900 dark:text-gray-100`"
 	>
-		<slot></slot>
+		<slot />
 	</UButton>
 </template>

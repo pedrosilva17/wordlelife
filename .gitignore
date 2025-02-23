@@ -26,3 +26,4 @@ logs
 # Scraping output
 external/*
 !external/db_scraping.py
+todo.txt

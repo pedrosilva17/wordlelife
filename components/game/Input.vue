@@ -30,7 +30,14 @@ const options: ModelRef<GameOption[] | undefined> = defineModel('options');
 	>
 		<template #option="{ option: wrestler }">
 			<span class="flex flex-row gap-2">
+				<UIcon
+					v-if="wrestler.icon === 'indy'"
+					aria="Indy wrestler"
+					name="i-mdi-briefcase"
+					class="text-black-50 dark:text-white-50 w-8 h-5"
+				/>
 				<NuxtImg
+					v-else
 					:src="`/images/${wrestler.icon}.png`"
 					:alt="`${wrestler.icon} company logo`"
 					class="object-cover w-8 h-5"
