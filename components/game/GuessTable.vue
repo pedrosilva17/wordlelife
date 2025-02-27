@@ -65,6 +65,18 @@ const columns: ComputedRef<GuessColumn[]> = computed(() => {
 		}
 	];
 });
+
+const scrollContainer = ref<HTMLDivElement | null>(null);
+const scrollToBottom = () => {
+	if (scrollContainer.value) {
+		scrollContainer.value.scrollTo({
+			top: scrollContainer.value.scrollHeight,
+			behavior: 'smooth'
+		});
+	}
+};
+
+defineExpose({ scrollToBottom });
 </script>
 
 <template>
@@ -72,25 +84,28 @@ const columns: ComputedRef<GuessColumn[]> = computed(() => {
 		<p>Good luck!</p>
 	</template>
 	<template v-else>
-		<span
-			class="flex flex-col-reverse max-w-xs sm:max-w-md md:max-w-xl lg:max-w-3xl xl:max-w-[90%] max-h-96 overflow-auto"
-		>
-			<div class="grid w-full gap-3 grid-cols-game">
+		<div class="flex flex-col container max-h-[50vh]">
+			<div class="grid w-full gap-3 grid-cols-game overflow-x-auto">
 				<div v-for="column in columns" :key="column.key" class="border-b">
 					{{ column.label }}
 				</div>
-				<template v-for="guess in guesses" :key="guess.id" class="flex flex-row">
-					<GameTableCell
-						v-for="(column, idx) in columns"
-						:key="column.key"
-						:column="column"
-						:guess="guess"
-						:answer="answer"
-						:animation-delay="idx * 300"
-					/>
-				</template>
+				<div
+					ref="scrollContainer"
+					class="col-span-full grid grid-cols-subgrid gap-y-3 overflow-y-auto"
+				>
+					<template v-for="guess in guesses" :key="guess.id">
+						<GameTableCell
+							v-for="(column, idx) in columns"
+							:key="column.key"
+							:column="column"
+							:guess="guess"
+							:answer="answer"
+							:animation-delay="idx * 300"
+						/>
+					</template>
+				</div>
 			</div>
-		</span>
+		</div>
 	</template>
 </template>
 ~/utils/utils

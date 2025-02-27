@@ -200,10 +200,12 @@ const open = ref(false);
 </script>
 
 <template>
-	<UPopover mode="hover" v-model:open="open" @touchstart="open = !open" class="min-w-20">
+	<UPopover mode="hover" v-model:open="open" class="min-w-20">
 		<Transition name="fade" :style="`transition-delay: ${animationDelay}ms`" appear>
-			<div
-				:class="`transition-opacity flex flex-col ${guess[(column.displayKey ?? column.key) as keyof Wrestler].toString().length > 30 ? 'text-sm' : 'text-base'} w-full relative p-4 rounded-md h-28 justify-center items-center drop-shadow-lg ${comparison.color}`"
+			<button
+				:class="`transition-opacity flex flex-col ${guess[(column.displayKey ?? column.key) as keyof Wrestler].toString().length > 30 ? 'text-sm' : 'text-base'} w-full relative p-4 rounded-md h-28 justify-center items-center drop-shadow-lg text-gray-950 ${comparison.color}`"
+				type="button"
+				@click="open = !open"
 			>
 				<template v-if="column.key === 'promotion'">
 					<NuxtImg
@@ -224,7 +226,7 @@ const open = ref(false);
 				</template>
 				<span v-if="column.key === 'birth_place'">{{ getUnicodeFlagIcon(guess.cc) }}</span>
 				<UIcon :name="comparison.icon" class="absolute top-1 right-1" />
-			</div>
+			</button>
 		</Transition>
 		<template #panel>
 			<div class="p-4">{{ comparison.infoText }}</div>

@@ -9,6 +9,6 @@
 			class="font-bold text-primary-600 dark:text-primary-400"
 			>Pedro Silva</ULink
 		>
-		| Database updated on 20/07/2024
+		| Database updated on 22/02/2025
 	</footer>
 </template>
