@@ -30,7 +30,6 @@ const isOpen = defineModel<boolean>();
 			<div class="flex flex-col flex-1 w-full text-justify gap-5">
 				<NuxtImg
 					v-if="imgPath"
-					preload
 					:src="imgPath"
 					alt="Modal decorative image"
 					height="300px"

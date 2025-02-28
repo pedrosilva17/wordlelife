@@ -1,4 +1,3 @@
-import { useFetch } from 'nuxt/app';
 import type { GameState } from '~/interfaces/gamestate';
 import type { Wrestler } from '~/interfaces/wrestler';
 
@@ -25,8 +24,8 @@ export default class Game {
 	}
 
 	async start() {
-		const { data: answer } = await useFetch<Wrestler>('/api/wrestlers?action=random');
-		this.answer = answer.value;
+		const answer = await $fetch<Wrestler>('/api/wrestlers?action=random');
+		this.answer = answer;
 		this.guesses = [];
 		this.idx = 1;
 		this.isOver = false;
