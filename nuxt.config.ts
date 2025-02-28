@@ -13,5 +13,10 @@ export default defineNuxtConfig({
 	},
 	ui: {
 		icons: ['mdi']
+	},
+	runtimeConfig: {
+		public: {
+			maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE === 'true'
+		}
 	}
 });
