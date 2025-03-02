@@ -2,8 +2,6 @@ FROM node:22-bullseye
 
 WORKDIR /app
 
-COPY . .
-
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
@@ -25,13 +23,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY . .
 
-RUN pip3 install \
-    requests \
-    beautifulsoup4 \
-    playwright \
-    geopy \
-    youtube-search-python \
-    pycountry
+RUN pip3 install -r external/requirements.txt
 
 RUN playwright install chromium
 

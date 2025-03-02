@@ -19,5 +19,5 @@ CREATE TABLE Wrestlers (
     nicknames TEXT,
     promotion TEXT,
     alignment TEXT,
-    finisher TEXT,
+    finisher TEXT
 );

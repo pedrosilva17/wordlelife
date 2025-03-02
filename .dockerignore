@@ -1,0 +1,14 @@
+.output/
+.nuxt/
+.git/
+.husky/
+node_modules/
+screenshots/
+*.md
+todo.txt
+.prettierrc
+.prettierignore
+.gitignore
+.eslintrc
+eslint.config.*
+tsconfig.json

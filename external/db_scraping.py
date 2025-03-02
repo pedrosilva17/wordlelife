@@ -31,7 +31,7 @@ def create_database(sql_path, db_path):
         connection.close()
 
 def check_existing(table_name, column, value):
-    connection, cursor = connection_open("database/database.db")
+    connection, cursor = connection_open("database/database_new.db")
     cursor.execute(f"""SELECT exists(SELECT 1 FROM {table_name} WHERE {column}=?) AS row_check;""", (value,))
     if cursor.fetchone()[0]:
         print(f"Skipped {value}, already exists in db")
@@ -42,7 +42,7 @@ def check_existing(table_name, column, value):
 
 
 def save(table):
-    connection, cursor = connection_open("database/database.db")
+    connection, cursor = connection_open("database/database_new.db")
     for value_group in zip(*table["values"]):
         cursor.execute(f"""INSERT INTO {table['name']}({', '.join(table['columns'])}) VALUES({', '.join(['?']*len(table['columns']))})""", value_group,)
     connection.commit()
@@ -143,11 +143,6 @@ def fetch(url, filename, wait_js=False, wait_selector=None):
             page.wait_for_selector(wait_selector)
 
             html_content = page.content()
-            print(html_content)
-            with open(f'external/html/{filename}.html', 'w', encoding='utf-8') as file:
-                file.write(html_content)
-            if not os.path.exists(f'external/html/{filename}.html'):
-                raise RuntimeError(f"Error saving file {filename}.html")
             browser.close()
             return html_content
     else:
@@ -166,7 +161,7 @@ def fetch(url, filename, wait_js=False, wait_selector=None):
             return print(f"Error fetching HTML: {e}")
 
 if __name__ == "__main__":
-    create_database('database/database.sql', 'database/database.db')
+    create_database('database/database.sql', 'database/database_new.db')
     wrestler_table = {
         "name": "Wrestlers",
         "columns": ["name", "age", "gender", "date_of_birth", "birth_place", "country", "cc", "latitude", "longitude", "billed_from", "height_ft", "height_cm", "weight_lbs", "weight_kg", "nicknames", "promotion", "alignment", "finisher"],

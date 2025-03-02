@@ -26,4 +26,7 @@ logs
 # Scraping output
 external/*
 !external/db_scraping.py
+!external/requirements.txt
+!external/docker_update_db.sh
+!external/host_docker_update_db.sh
 todo.txt
